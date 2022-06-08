@@ -1,0 +1,83 @@
+#csv-progress {
+  width: 100%;
+}
+#csv-progress td,
+#csv-progress th {
+  padding: 0.5em 1em;
+}
+#csv-progress td.status,
+#csv-progress th.status {
+  width: 32px;
+}
+#csv-progress td.row,
+#csv-progress th.row {
+  width: 3em;
+  text-align: center;
+}
+#csv-progress td.reason,
+#csv-progress th.reason {
+  text-align: right;
+}
+#csv-progress tr.importer-loading td {
+  background: url(../images/loader.gif) no-repeat center center;
+  height: 32px;
+}
+#csv-progress .skipped td {
+  background: #f1efe7;
+}
+#csv-progress .failed td {
+  background: #ffeceb;
+}
+#csv-progress mark.result {
+  height: 0;
+  display: block;
+  line-height: 16px;
+  overflow: hidden;
+  padding: 16px 0 0 0;
+}
+#csv-progress .skipped mark.result {
+  background: url(../images/warning.png) no-repeat center top;
+}
+#csv-progress .imported mark.result,
+#csv-progress .merged mark.result {
+  background: url(../images/done.png) no-repeat center top;
+}
+#csv-progress .failed mark.result {
+  background: url(../images/error.png) no-repeat center top;
+}
+#csv-progress .complete td {
+  background: #C8E6C9;
+  color: #008000;
+  text-align: center;
+  font-size: 1.1em;
+}
+#csv-progress .regenerating td {
+  padding: 0;
+}
+#csv-progress .regenerating div.progress {
+  background: #000000;
+  margin-top: 10px;
+  padding: 0.5em 1em;
+  color: #fff;
+  overflow: hidden;
+  width: 0;
+  float: left;
+  text-align: center;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+.widefat_importer td {
+  vertical-align: middle;
+  padding: 5px 9px;
+}
+#wpfooter{ position: relative !important;  }
+.tool-box .title{
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+.tool-box .title img{ width:24px;  }
+.tool-box .description{ background-color: #F5F5ED; border:1px dashed #B91019; }
+.tool-box .description ol{ margin: 20px; padding: 0px 10px; }
+

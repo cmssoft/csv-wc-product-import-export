@@ -1,0 +1,1 @@
+<p class="submit"><a class="docs button-primary" href="<?php echo plugins_url( 'assets/file/sample-products.csv', CSV_WC_FILE ); ?>"><?php _e('Download Sample Products', CSV_TRANSLATE_NAME); ?></a>
