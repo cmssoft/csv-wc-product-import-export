@@ -5,7 +5,7 @@
 if ( ! class_exists( 'WP_Importer' ) )
 	return;
 
-class CSV_WC_Product_Import extends WP_Importer {
+class CWPIE_Product_Import extends WP_Importer {
 
 	var $id;
 	var $file_url;
@@ -85,7 +85,7 @@ class CSV_WC_Product_Import extends WP_Importer {
 				if ( $this->handle_upload() )
 					$this->import_options();
 				else
-					_e( 'Error with handle_upload!', CSV_TRANSLATE_NAME );
+					_e( 'Error with handle_upload!', CWPIE_TRANSLATE_NAME );
 			break;
 			case 2 :
 				$this->header();
@@ -112,7 +112,7 @@ class CSV_WC_Product_Import extends WP_Importer {
 					//Insert File Log
 					$imported_file = get_post_meta( $this->id, '_wp_imported_file', true);
 					if(!empty($imported_file)){
-						$wpdb->insert($wpdb->prefix.'csv_product_import_file_log', array(
+						$wpdb->insert($wpdb->prefix.'cwpie_product_import_file_log', array(
 			                'file_name' => $imported_file,
 			                'file_status' => 'Success',
 			                'file_date' => $created_at, 
@@ -123,10 +123,10 @@ class CSV_WC_Product_Import extends WP_Importer {
 						<thead>
 							<tr>
 								<th class="status">&nbsp;</th>
-								<th class="row"><?php _e( '#', CSV_TRANSLATE_NAME ); ?></th>
-								<th><?php _e( 'SKU', CSV_TRANSLATE_NAME ); ?></th>
-								<th style="width:100px;"><?php _e( 'Product', CSV_TRANSLATE_NAME ); ?></th>
-								<th class="reason"><?php _e( 'Message', CSV_TRANSLATE_NAME ); ?></th>
+								<th class="row"><?php _e( '#', CWPIE_TRANSLATE_NAME ); ?></th>
+								<th><?php _e( 'SKU', CWPIE_TRANSLATE_NAME ); ?></th>
+								<th style="width:100px;"><?php _e( 'Product', CWPIE_TRANSLATE_NAME ); ?></th>
+								<th class="reason"><?php _e( 'Message', CWPIE_TRANSLATE_NAME ); ?></th>
 							</tr>
 						</thead>
 						<tfoot>
@@ -219,7 +219,7 @@ class CSV_WC_Product_Import extends WP_Importer {
 											} catch(err) {}
 
 										} else {
-											$('#csv-progress tbody').append( '<tr class="error"><td class="status" colspan="5">' + '<?php _e( 'AJAX Error', CSV_TRANSLATE_NAME ); ?>' + '</td></tr>' );
+											$('#csv-progress tbody').append( '<tr class="error"><td class="status" colspan="5">' + '<?php _e( 'AJAX Error', CWPIE_TRANSLATE_NAME ); ?>' + '</td></tr>' );
 										}
 
 										var w = $(window);
@@ -322,12 +322,12 @@ class CSV_WC_Product_Import extends WP_Importer {
 										if ( response !== Object( response ) || ( typeof response.success === "undefined" && typeof response.error === "undefined" ) ) {
 											response = new Object;
 											response.success = false;
-											response.error = "<?php printf( esc_js( __( 'The resize request was abnormally terminated (ID %s). This is likely due to the image exceeding available memory or some other type of fatal error.', CSV_TRANSLATE_NAME ) ), '" + id + "' ); ?>";
+											response.error = "<?php printf( esc_js( __( 'The resize request was abnormally terminated (ID %s). This is likely due to the image exceeding available memory or some other type of fatal error.', CWPIE_TRANSLATE_NAME ) ), '" + id + "' ); ?>";
 										}
 
 										regen_count ++;
 
-										$('#csv-progress tbody .regenerating .progress').css( 'width', '100%' ).html( regen_count + ' / ' + attachments.length + ' <?php echo esc_js( __( 'thumbnails regenerated', CSV_TRANSLATE_NAME ) ); ?>' );
+										$('#csv-progress tbody .regenerating .progress').css( 'width', '100%' ).html( regen_count + ' / ' + attachments.length + ' <?php echo esc_js( __( 'thumbnails regenerated', CWPIE_TRANSLATE_NAME ) ); ?>' );
 
 										if ( ! response.success ) {
 											$('#csv-progress tbody').append( '<tr><td colspan="5">' + response.error + '</td></tr>' );
@@ -369,14 +369,14 @@ class CSV_WC_Product_Import extends WP_Importer {
 					//Insert File Log
 					$imported_file = get_post_meta( $this->id, '_wp_imported_file', true);
 					if(!empty($imported_file)){
-						$wpdb->insert($wpdb->prefix.'csv_product_import_file_log', array(
+						$wpdb->insert($wpdb->prefix.'cwpie_product_import_file_log', array(
 			                'file_name' => $imported_file,
 			                'file_status' => 'Failed',
 			                'file_date' => $created_at, 
 			            ));
 			        }
 
-					echo '<p class="error">' . __( 'Error finding uploaded file!', CSV_TRANSLATE_NAME ) . '</p>';
+					echo '<p class="error">' . __( 'Error finding uploaded file!', CWPIE_TRANSLATE_NAME ) . '</p>';
 				}
 			break;
 			case 3 :
@@ -440,12 +440,12 @@ class CSV_WC_Product_Import extends WP_Importer {
 				$this->crosssell_skus  = isset( $_POST['crosssell_skus']) ? array_filter( (array) $_POST['crosssell_skus'] ) : array();
 				$this->upsell_skus     = isset( $_POST['upsell_skus']) ? array_filter( (array) $_POST['upsell_skus'] ) : array();
 
-				/*_e( 'Cleaning up...', CSV_TRANSLATE_NAME ) . ' ';*/
+				/*_e( 'Cleaning up...', CWPIE_TRANSLATE_NAME ) . ' ';*/
 
 				wp_defer_term_counting( true );
 				wp_defer_comment_counting( true );
 
-				/*_e( 'Clearing transients...', CSV_TRANSLATE_NAME ) . ' ';*/
+				/*_e( 'Clearing transients...', CWPIE_TRANSLATE_NAME ) . ' ';*/
 
 				// reset transients for products
 				wc_delete_product_transients();
@@ -480,12 +480,12 @@ class CSV_WC_Product_Import extends WP_Importer {
 
 				/*echo 'Reticulating Splines...' . ' '; // Easter egg*/
 
-				/*_e( 'Backfilling parents...', CSV_TRANSLATE_NAME ) . ' ';*/
+				/*_e( 'Backfilling parents...', CWPIE_TRANSLATE_NAME ) . ' ';*/
 
 				$this->backfill_parents();
 
 				if ( ! empty( $this->upsell_skus ) ) {
-					/*_e( 'Linking upsells...', CSV_TRANSLATE_NAME ) . ' ';*/
+					/*_e( 'Linking upsells...', CWPIE_TRANSLATE_NAME ) . ' ';*/
 
 					foreach ( $this->upsell_skus as $post_id => $skus ) {
 						$this->link_product_skus( 'upsell', $post_id, $skus );
@@ -493,7 +493,7 @@ class CSV_WC_Product_Import extends WP_Importer {
 				}
 
 				if ( ! empty( $this->crosssell_skus ) ) {
-					/*_e( 'Linking crosssells...', CSV_TRANSLATE_NAME ) . ' ';*/
+					/*_e( 'Linking crosssells...', CWPIE_TRANSLATE_NAME ) . ' ';*/
 
 					foreach ( $this->crosssell_skus as $post_id => $skus ) {
 						$this->link_product_skus( 'crosssell', $post_id, $skus );
@@ -502,7 +502,7 @@ class CSV_WC_Product_Import extends WP_Importer {
 
 				if ( 'csv_wc_variation' === $this->import_page && ! empty( $this->processed_posts ) ) {
 
-					/*_e( 'Syncing variations...', CSV_TRANSLATE_NAME ) . ' ';*/
+					/*_e( 'Syncing variations...', CWPIE_TRANSLATE_NAME ) . ' ';*/
 
 					foreach ( $parents as $parent ) {
 						WC_Product_Variable::sync( $parent );
@@ -510,7 +510,7 @@ class CSV_WC_Product_Import extends WP_Importer {
 				}
 
 				// SUCCESS
-				_e( 'Import complete.', CSV_TRANSLATE_NAME );
+				_e( 'Import complete.', CWPIE_TRANSLATE_NAME );
 
 				$this->import_end();
 				exit;
@@ -576,8 +576,8 @@ class CSV_WC_Product_Import extends WP_Importer {
 	* The main controller for the actual import stage.
 	*/
 	public function import() {
-		CSV_WC_Product_Import_Export::log( '---' );
-		CSV_WC_Product_Import_Export::log( __( 'Processing products.', CSV_TRANSLATE_NAME ) );
+		CWPIE_Product_Import_Export::log( '---' );
+		CWPIE_Product_Import_Export::log( __( 'Processing products.', CWPIE_TRANSLATE_NAME ) );
 
 		$imported_file = '';
 		if(isset($_POST['import_id'])){
@@ -590,7 +590,7 @@ class CSV_WC_Product_Import extends WP_Importer {
 
 			if ( ! is_wp_error( $product ) ) {
 				if($item['tax:product_type']=='variation'){
-					$variation_product = new CSV_WC_Product_Variation_Import();
+					$variation_product = new CWPIE_Product_Variation_Import();
 					$variation_product->process_product( $product, $imported_file );
 				}else{
 					$this->process_product( $product, $imported_file );
@@ -607,7 +607,7 @@ class CSV_WC_Product_Import extends WP_Importer {
 			wc_update_product_lookup_tables();
 		}
 
-		CSV_WC_Product_Import_Export::log( __( 'Finished processing products.', CSV_TRANSLATE_NAME ) );
+		CWPIE_Product_Import_Export::log( __( 'Finished processing products.', CWPIE_TRANSLATE_NAME ) );
 	}
 
 	/**
@@ -618,14 +618,14 @@ class CSV_WC_Product_Import extends WP_Importer {
 		$memory    = size_format( wc_let_to_num( ini_get( 'memory_limit' ) ) );
 		$wp_memory = size_format( wc_let_to_num( WP_MEMORY_LIMIT ) );
 
-		CSV_WC_Product_Import_Export::log( '---[ New Import ] PHP Memory: ' . $memory . ', WP Memory: ' . $wp_memory );
-		CSV_WC_Product_Import_Export::log( __( 'Parsing products CSV.', CSV_TRANSLATE_NAME ) );
+		CWPIE_Product_Import_Export::log( '---[ New Import ] PHP Memory: ' . $memory . ', WP Memory: ' . $wp_memory );
+		CWPIE_Product_Import_Export::log( __( 'Parsing products CSV.', CWPIE_TRANSLATE_NAME ) );
 
-		$this->parser = new CSV_WC_Parser( 'product' );
+		$this->parser = new CWPIE_Parser( 'product' );
 
 		list( $this->parsed_data, $this->raw_headers, $position ) = $this->parser->parse_data( $file, $this->delimiter, $mapping, $start_pos, $end_pos );
 
-		CSV_WC_Product_Import_Export::log( __( 'Finished parsing products CSV.', CSV_TRANSLATE_NAME ) );
+		CWPIE_Product_Import_Export::log( __( 'Finished parsing products CSV.', CWPIE_TRANSLATE_NAME ) );
 
 		unset( $import_data );
 
@@ -680,7 +680,7 @@ class CSV_WC_Product_Import extends WP_Importer {
 
 		if ( isset( $file['error'] ) ) {
 			/* translators: placeholder is upload error from WP */
-			throw new Exception( sprintf( __( 'Sorry, there has been an error: %s.', CSV_TRANSLATE_NAME ), $file['error'] ) );
+			throw new Exception( sprintf( __( 'Sorry, there has been an error: %s.', CWPIE_TRANSLATE_NAME ), $file['error'] ) );
 		}
 
 		$this->id = (int) $file['id'];
@@ -696,20 +696,20 @@ class CSV_WC_Product_Import extends WP_Importer {
 	protected function handle_initial_path_file_check() {
 		if ( ! $this->is_safe_path( ABSPATH, $_POST['file_url'] ) ) {
 			/* translators: placeholder is base directory (ABSPATH) */
-			throw new Exception( sprintf( __( 'Sorry, there has been an error: path file must exist inside %s.', CSV_TRANSLATE_NAME ), ABSPATH ) );
+			throw new Exception( sprintf( __( 'Sorry, there has been an error: path file must exist inside %s.', CWPIE_TRANSLATE_NAME ), ABSPATH ) );
 		}
 
 		$filepath = ABSPATH . $_POST['file_url'];
 		if ( ! file_exists( $filepath ) ) {
 			/* translators: placeholder is file path */
-			throw new Exception( sprintf( __( 'Sorry, there has been an error: %s does not exist.', CSV_TRANSLATE_NAME ), $filepath ) );
+			throw new Exception( sprintf( __( 'Sorry, there has been an error: %s does not exist.', CWPIE_TRANSLATE_NAME ), $filepath ) );
 		}
 
 		if ( ! $this->is_acceptable_csv_file( $filepath ) ) {
 			$mime_types = implode( ', ', $this->get_acceptable_csv_mime_types() );
 
 			/* translators: placeholder is comma-separated of accepted mime-types for import (e.g. 'text/csv') */
-			throw new Exception( sprintf( __( 'File must have .csv extension with acceptable mime types (%s)', CSV_TRANSLATE_NAME ), $mime_types ) );
+			throw new Exception( sprintf( __( 'File must have .csv extension with acceptable mime types (%s)', CWPIE_TRANSLATE_NAME ), $mime_types ) );
 		}
 
 		$this->file_url = esc_attr( $_POST['file_url'] );
@@ -742,7 +742,7 @@ class CSV_WC_Product_Import extends WP_Importer {
 	        	foreach( $posts_that_exist as $post_exists ) {
 
 		        	// Check unique SKU
-		        	$post_exists_sku = CSV_WC_Product_Import_Export::get_meta_data( $post_exists, '_sku' );
+		        	$post_exists_sku = CWPIE_Product_Import_Export::get_meta_data( $post_exists, '_sku' );
 
 					if ( $sku == $post_exists_sku ) {
 						return true;
@@ -837,26 +837,26 @@ class CSV_WC_Product_Import extends WP_Importer {
 				$processing_product_sku = $post['sku'];
 			}
 
-			$log_id = $wpdb->get_var( $wpdb->prepare( "SELECT log_id FROM ".$wpdb->prefix."csv_product_import_data_log WHERE product_sku = %s AND file_name = %s", $processing_product_sku,  $imported_file) );
+			$log_id = $wpdb->get_var( $wpdb->prepare( "SELECT log_id FROM ".$wpdb->prefix."cwpie_product_import_data_log WHERE product_sku = %s AND file_name = %s", $processing_product_sku,  $imported_file) );
 
 			if($log_id){
 				return;
 			}
 
 			if ( ! empty( $processing_product_id ) && isset( $this->processed_posts[ $processing_product_id ] ) ) {
-				$this->add_import_result( 'skipped', __( 'Product already processed', CSV_TRANSLATE_NAME ), $processing_product_id, $processing_product_title, $processing_product_sku );
-				CSV_WC_Product_Import_Export::log( __('> Post ID already processed. Skipping.', CSV_TRANSLATE_NAME), true );
+				$this->add_import_result( 'skipped', __( 'Product already processed', CWPIE_TRANSLATE_NAME ), $processing_product_id, $processing_product_title, $processing_product_sku );
+				CWPIE_Product_Import_Export::log( __('> Post ID already processed. Skipping.', CWPIE_TRANSLATE_NAME), true );
 
 				//Insert Data Log
 				if(!empty($imported_file)){
-					$wpdb->insert($wpdb->prefix.'csv_product_import_data_log', array(
+					$wpdb->insert($wpdb->prefix.'cwpie_product_import_data_log', array(
 			            'file_name' => $imported_file,
 			            'product_id' => $processing_product_id,
 			            'product_sku' => $processing_product_sku,
 			            'product_name' => $processing_product_title,
 			            'product_type' => '',
 			            'status' => 0, 
-			            'status_message' => __( 'Product already processed', CSV_TRANSLATE_NAME ),
+			            'status_message' => __( 'Product already processed', CWPIE_TRANSLATE_NAME ),
 			            'created_at' => $created_at
 			        ));
 				}
@@ -866,19 +866,19 @@ class CSV_WC_Product_Import extends WP_Importer {
 			}
 
 			if ( ! empty ( $post['post_status'] ) && $post['post_status'] == 'auto-draft' ) {
-				$this->add_import_result( 'skipped', __( 'Skipping auto-draft', CSV_TRANSLATE_NAME ), $processing_product_id, $processing_product_title, $processing_product_sku );
-				CSV_WC_Product_Import_Export::log( __('> Skipping auto-draft.', CSV_TRANSLATE_NAME), true );
+				$this->add_import_result( 'skipped', __( 'Skipping auto-draft', CWPIE_TRANSLATE_NAME ), $processing_product_id, $processing_product_title, $processing_product_sku );
+				CWPIE_Product_Import_Export::log( __('> Skipping auto-draft.', CWPIE_TRANSLATE_NAME), true );
 
 				//Insert Data Log
 				if(!empty($imported_file)){
-					$wpdb->insert($wpdb->prefix.'csv_product_import_data_log', array(
+					$wpdb->insert($wpdb->prefix.'cwpie_product_import_data_log', array(
 			            'file_name' => $imported_file,
 			            'product_id' => $processing_product_id,
 			            'product_sku' => $processing_product_sku,
 			            'product_name' => $processing_product_title,
 			            'product_type' => '',
 			            'status' => 0, 
-			            'status_message' => __( 'Skipping auto-draft.', CSV_TRANSLATE_NAME ),
+			            'status_message' => __( 'Skipping auto-draft.', CWPIE_TRANSLATE_NAME ),
 			            'created_at' => $created_at
 			        ));
 				}
@@ -890,19 +890,19 @@ class CSV_WC_Product_Import extends WP_Importer {
 			// Check if post exists when importing
 			if ( ! $merging ) {
 				if ( $this->product_exists( $processing_product_title, $processing_product_sku, $post['post_name'] ) ) {
-					$this->add_import_result( 'skipped', __( 'Product already exists', CSV_TRANSLATE_NAME ), $processing_product_id, $processing_product_title, $processing_product_sku );
-					CSV_WC_Product_Import_Export::log( sprintf( __('> &#8220;%s&#8221; already exists.', CSV_TRANSLATE_NAME), esc_html($processing_product_title) ), true );
+					$this->add_import_result( 'skipped', __( 'Product already exists', CWPIE_TRANSLATE_NAME ), $processing_product_id, $processing_product_title, $processing_product_sku );
+					CWPIE_Product_Import_Export::log( sprintf( __('> &#8220;%s&#8221; already exists.', CWPIE_TRANSLATE_NAME), esc_html($processing_product_title) ), true );
 					
 					//Insert Data Log
 					if(!empty($imported_file)){
-						$wpdb->insert($wpdb->prefix.'csv_product_import_data_log', array(
+						$wpdb->insert($wpdb->prefix.'cwpie_product_import_data_log', array(
 				            'file_name' => $imported_file,
 				            'product_id' => $processing_product_id,
 				            'product_sku' => $processing_product_sku,
 				            'product_name' => $processing_product_title,
 				            'product_type' => '',
 				            'status' => 0, 
-				            'status_message' => __( 'Product already exists', CSV_TRANSLATE_NAME ),
+				            'status_message' => __( 'Product already exists', CWPIE_TRANSLATE_NAME ),
 				            'created_at' => $created_at
 				        ));
 					}
@@ -911,19 +911,19 @@ class CSV_WC_Product_Import extends WP_Importer {
 					return;
 				}
 				if ( $processing_product_id && is_string( get_post_status( $processing_product_id ) ) ) {
-					$this->add_import_result( 'skipped', __( 'Importing post ID conflicts with an existing post ID', CSV_TRANSLATE_NAME ), $processing_product_id, get_the_title( $processing_product_id ), '' );
-					CSV_WC_Product_Import_Export::log( sprintf( __('> &#8220;%s&#8221; ID already exists.', CSV_TRANSLATE_NAME), esc_html( $processing_product_id ) ), true );
+					$this->add_import_result( 'skipped', __( 'Importing post ID conflicts with an existing post ID', CWPIE_TRANSLATE_NAME ), $processing_product_id, get_the_title( $processing_product_id ), '' );
+					CWPIE_Product_Import_Export::log( sprintf( __('> &#8220;%s&#8221; ID already exists.', CWPIE_TRANSLATE_NAME), esc_html( $processing_product_id ) ), true );
 
 					//Insert Data Log
 					if(!empty($imported_file)){
-						$wpdb->insert($wpdb->prefix.'csv_product_import_data_log', array(
+						$wpdb->insert($wpdb->prefix.'cwpie_product_import_data_log', array(
 				            'file_name' => $imported_file,
 				            'product_id' => $processing_product_id,
 				            'product_sku' => $processing_product_sku,
 				            'product_name' => get_the_title( $processing_product_id ),
 				            'product_type' => '',
 				            'status' => 0, 
-				            'status_message' => __( 'Importing post ID conflicts with an existing post ID', CSV_TRANSLATE_NAME ),
+				            'status_message' => __( 'Importing post ID conflicts with an existing post ID', CWPIE_TRANSLATE_NAME ),
 				            'created_at' => $created_at
 				        ));
 				    }
@@ -935,19 +935,19 @@ class CSV_WC_Product_Import extends WP_Importer {
 
 			// Check post type to avoid conflicts with IDs
 			if ( $merging && $processing_product_id && get_post_type( $processing_product_id ) !== 'product' ) {
-				$this->add_import_result( 'skipped', __( 'Post is not a product', CSV_TRANSLATE_NAME ), $processing_product_id, $processing_product_title, $processing_product_sku );
-				CSV_WC_Product_Import_Export::log( sprintf( __('> &#8220;%s&#8221; is not a product.', CSV_TRANSLATE_NAME), esc_html($processing_product_id) ), true );
+				$this->add_import_result( 'skipped', __( 'Post is not a product', CWPIE_TRANSLATE_NAME ), $processing_product_id, $processing_product_title, $processing_product_sku );
+				CWPIE_Product_Import_Export::log( sprintf( __('> &#8220;%s&#8221; is not a product.', CWPIE_TRANSLATE_NAME), esc_html($processing_product_id) ), true );
 
 				//Insert Data Log
 				if(!empty($imported_file)){
-					$wpdb->insert($wpdb->prefix.'csv_product_import_data_log', array(
+					$wpdb->insert($wpdb->prefix.'cwpie_product_import_data_log', array(
 			            'file_name' => $imported_file,
 			            'product_id' => $processing_product_id,
 			            'product_sku' => $processing_product_sku,
 			            'product_name' => $processing_product_title,
 			            'product_type' => '',
 			            'status' => 0, 
-			            'status_message' => __( 'Post is not a product', CSV_TRANSLATE_NAME ),
+			            'status_message' => __( 'Post is not a product', CWPIE_TRANSLATE_NAME ),
 			            'created_at' => $created_at
 			        ));
 			    }
@@ -961,7 +961,7 @@ class CSV_WC_Product_Import extends WP_Importer {
 				// Only merge fields which are set
 				$post_id = $processing_product_id;
 
-				CSV_WC_Product_Import_Export::log( sprintf( __('> Merging post ID %s.', CSV_TRANSLATE_NAME), $post_id ), true );
+				CWPIE_Product_Import_Export::log( sprintf( __('> Merging post ID %s.', CWPIE_TRANSLATE_NAME), $post_id ), true );
 
 				$postdata = array(
 					'ID' => $post_id
@@ -1030,18 +1030,18 @@ class CSV_WC_Product_Import extends WP_Importer {
 							$messages[] = $error;
 						}
 						$this->add_import_result( 'failed', implode( ', ', $messages ), $post_id, $processing_product_title, $processing_product_sku );
-						CSV_WC_Product_Import_Export::log( sprintf( __('> Failed to update product %s', CSV_TRANSLATE_NAME), $post_id ), true );
+						CWPIE_Product_Import_Export::log( sprintf( __('> Failed to update product %s', CWPIE_TRANSLATE_NAME), $post_id ), true );
 
 						//Insert Data Log
 						if(!empty($imported_file)){
-							$wpdb->insert($wpdb->prefix.'csv_product_import_data_log', array(
+							$wpdb->insert($wpdb->prefix.'cwpie_product_import_data_log', array(
 					            'file_name' => $imported_file,
 					            'product_id' => $post_id,
 					            'product_sku' => $processing_product_sku,
 					            'product_name' => $processing_product_title,
 					            'product_type' => '',
 					            'status' => 0, 
-					            'status_message' => __( 'Failed to update product', CSV_TRANSLATE_NAME ),
+					            'status_message' => __( 'Failed to update product', CWPIE_TRANSLATE_NAME ),
 					            'created_at' => $created_at
 					        ));
 					    }
@@ -1054,7 +1054,7 @@ class CSV_WC_Product_Import extends WP_Importer {
 							$this->set_featured( $post_id, $post );
 						}
 
-						CSV_WC_Product_Import_Export::log( __( '> Merged post data: ', CSV_TRANSLATE_NAME ) . print_r( $postdata, true ) );
+						CWPIE_Product_Import_Export::log( __( '> Merged post data: ', CWPIE_TRANSLATE_NAME ) . print_r( $postdata, true ) );
 					}
 				}
 
@@ -1079,7 +1079,7 @@ class CSV_WC_Product_Import extends WP_Importer {
 				}
 
 				// Insert product
-				CSV_WC_Product_Import_Export::log( sprintf( __('> Inserting %s', CSV_TRANSLATE_NAME), esc_html( $processing_product_title ) ), true );
+				CWPIE_Product_Import_Export::log( sprintf( __('> Inserting %s', CWPIE_TRANSLATE_NAME), esc_html( $processing_product_title ) ), true );
 
 				$postdata = array(
 					'import_id'      => $processing_product_id,
@@ -1101,19 +1101,19 @@ class CSV_WC_Product_Import extends WP_Importer {
 				$post_id = wp_insert_post( $postdata, true );
 
 				if ( is_wp_error( $post_id ) ) {
-					$this->add_import_result( 'failed', __( 'Failed to import product', CSV_TRANSLATE_NAME ), $processing_product_id, $processing_product_title, $processing_product_sku );
-					CSV_WC_Product_Import_Export::log( sprintf( __( 'Failed to import product &#8220;%s&#8221;', CSV_TRANSLATE_NAME ), esc_html($processing_product_title) ) );
+					$this->add_import_result( 'failed', __( 'Failed to import product', CWPIE_TRANSLATE_NAME ), $processing_product_id, $processing_product_title, $processing_product_sku );
+					CWPIE_Product_Import_Export::log( sprintf( __( 'Failed to import product &#8220;%s&#8221;', CWPIE_TRANSLATE_NAME ), esc_html($processing_product_title) ) );
 
 					//Insert Data Log
 					if(!empty($imported_file)){
-						$wpdb->insert($wpdb->prefix.'csv_product_import_data_log', array(
+						$wpdb->insert($wpdb->prefix.'cwpie_product_import_data_log', array(
 				            'file_name' => $imported_file,
 				            'product_id' => $processing_product_id,
 				            'product_sku' => $processing_product_sku,
 				            'product_name' => $processing_product_title,
 				            'product_type' => '',
 				            'status' => 0, 
-				            'status_message' => __( 'Failed to import product', CSV_TRANSLATE_NAME ),
+				            'status_message' => __( 'Failed to import product', CWPIE_TRANSLATE_NAME ),
 				            'created_at' => $created_at
 				        ));
 					}
@@ -1126,7 +1126,7 @@ class CSV_WC_Product_Import extends WP_Importer {
 						$this->set_featured( $post_id, $post );
 					}
 
-					CSV_WC_Product_Import_Export::log( sprintf( __('> Inserted - post ID is %s.', CSV_TRANSLATE_NAME), $post_id ) );
+					CWPIE_Product_Import_Export::log( sprintf( __('> Inserted - post ID is %s.', CWPIE_TRANSLATE_NAME), $post_id ) );
 				}
 			}
 
@@ -1176,7 +1176,7 @@ class CSV_WC_Product_Import extends WP_Importer {
 								if ( $image == $attachment_url || basename( $image ) == $attachment_basename ) {
 									unset( $post['images'][ $key ] );
 
-									CSV_WC_Product_Import_Export::log( sprintf( __( '> > Image exists - skipping %s', CSV_TRANSLATE_NAME ), basename( $image ) ) );
+									CWPIE_Product_Import_Export::log( sprintf( __( '> > Image exists - skipping %s', CWPIE_TRANSLATE_NAME ), basename( $image ) ) );
 
 									if ( $key == 0 ) {
 										$insert_meta_data['_thumbnail_id'] = $attachment;
@@ -1202,7 +1202,7 @@ class CSV_WC_Product_Import extends WP_Importer {
 
 				if ( $post['images'] ) foreach ( $post['images'] as $image_key => $image ) {
 
-					CSV_WC_Product_Import_Export::log( sprintf( __( '> > Importing image "%s"', CSV_TRANSLATE_NAME ), $image ) );
+					CWPIE_Product_Import_Export::log( sprintf( __( '> > Importing image "%s"', CWPIE_TRANSLATE_NAME ), $image ) );
 
 					$filename = basename( $image );
 
@@ -1216,7 +1216,7 @@ class CSV_WC_Product_Import extends WP_Importer {
 					$attachment_id = $this->process_attachment( $attachment, $image, $post_id );
 
 					if ( ! is_wp_error( $attachment_id ) && $attachment_id ) {
-						CSV_WC_Product_Import_Export::log( sprintf( __( '> > Imported image "%s"', CSV_TRANSLATE_NAME ), $image ) );
+						CWPIE_Product_Import_Export::log( sprintf( __( '> > Imported image "%s"', CWPIE_TRANSLATE_NAME ), $image ) );
 
 						// Set alt
 						update_post_meta( $attachment_id, '_wp_attachment_image_alt', $processing_product_title );
@@ -1230,14 +1230,14 @@ class CSV_WC_Product_Import extends WP_Importer {
 
 						$featured = false;
 					} else {
-						CSV_WC_Product_Import_Export::log( sprintf( __( '> > Error importing image "%s"', CSV_TRANSLATE_NAME ), $image ) );
-						CSV_WC_Product_Import_Export::log( '> > ' . $attachment_id->get_error_message() );
+						CWPIE_Product_Import_Export::log( sprintf( __( '> > Error importing image "%s"', CWPIE_TRANSLATE_NAME ), $image ) );
+						CWPIE_Product_Import_Export::log( '> > ' . $attachment_id->get_error_message() );
 					}
 
 					unset( $attachment, $attachment_id );
 				}
 
-				CSV_WC_Product_Import_Export::log( __( '> > Images set', CSV_TRANSLATE_NAME ) );
+				CWPIE_Product_Import_Export::log( __( '> > Images set', CWPIE_TRANSLATE_NAME ) );
 
 				ksort( $gallery_ids );
 
@@ -1248,7 +1248,7 @@ class CSV_WC_Product_Import extends WP_Importer {
 			if ( ! empty( $post['attributes'] ) && is_array($post['attributes']) ) {
 
 				if ( $merging ) {
-					$attributes = array_filter( (array) CSV_WC_Product_Import_Export::get_meta_data( $post_id, '_product_attributes' ) );
+					$attributes = array_filter( (array) CWPIE_Product_Import_Export::get_meta_data( $post_id, '_product_attributes' ) );
 					$attributes = array_merge( $attributes, $post['attributes'] );
 				} else {
 					$attributes = $post['attributes'];
@@ -1319,36 +1319,36 @@ class CSV_WC_Product_Import extends WP_Importer {
 
 			if ( $merging ) {
 				$this->add_import_result( 'merged', 'Merge successful', $post_id, $processing_product_title, $processing_product_sku );
-				CSV_WC_Product_Import_Export::log( sprintf( __('> Finished merging post ID %s.', CSV_TRANSLATE_NAME), $post_id ) );
+				CWPIE_Product_Import_Export::log( sprintf( __('> Finished merging post ID %s.', CWPIE_TRANSLATE_NAME), $post_id ) );
 
 				//Insert Data Log
 				if(!empty($imported_file)){
-					$wpdb->insert($wpdb->prefix.'csv_product_import_data_log', array(
+					$wpdb->insert($wpdb->prefix.'cwpie_product_import_data_log', array(
 			            'file_name' => $imported_file,
 			            'product_id' => $post_id,
 			            'product_sku' => $processing_product_sku,
 			            'product_name' => $processing_product_title,
 			            'product_type' => '',
 			            'status' => 1, 
-			            'status_message' => __( 'Merge successful', CSV_TRANSLATE_NAME ),
+			            'status_message' => __( 'Merge successful', CWPIE_TRANSLATE_NAME ),
 			            'created_at' => $created_at
 			        ));
 			    }
 
 			} else {
 				$this->add_import_result( 'imported', 'Import successful', $post_id, $processing_product_title, $processing_product_sku );
-				CSV_WC_Product_Import_Export::log( sprintf( __('> Finished importing post ID %s.', CSV_TRANSLATE_NAME), $post_id ) );
+				CWPIE_Product_Import_Export::log( sprintf( __('> Finished importing post ID %s.', CWPIE_TRANSLATE_NAME), $post_id ) );
 
 				//Insert Data Log
 				if(!empty($imported_file)){
-					$wpdb->insert($wpdb->prefix.'csv_product_import_data_log', array(
+					$wpdb->insert($wpdb->prefix.'cwpie_product_import_data_log', array(
 			            'file_name' => $imported_file,
 			            'product_id' => $post_id,
 			            'product_sku' => $processing_product_sku,
 			            'product_name' => $processing_product_title,
 			            'product_type' => '',
 			            'status' => 1, 
-			            'status_message' => __( 'Import successful', CSV_TRANSLATE_NAME ),
+			            'status_message' => __( 'Import successful', CWPIE_TRANSLATE_NAME ),
 			            'created_at' => $created_at
 			        ));
 			    }
@@ -1363,7 +1363,7 @@ class CSV_WC_Product_Import extends WP_Importer {
 			unset( $post );
 		}
 		catch(Error $e){
-			CSV_WC_Product_Import_Export::log( sprintf( __('> Error writing to database: %s.', CSV_TRANSLATE_NAME), $e->getMessage()." = ".json_encode($post) ) );
+			CWPIE_Product_Import_Export::log( sprintf( __('> Error writing to database: %s.', CWPIE_TRANSLATE_NAME), $e->getMessage()." = ".json_encode($post) ) );
 		}
 	}
 
@@ -1487,7 +1487,7 @@ class CSV_WC_Product_Import extends WP_Importer {
 		}
 
 		if ( ! is_wp_error( $attachment_id ) && $attachment_id > 0 ) {
-			CSV_WC_Product_Import_Export::log( sprintf( __( '> > Inserted image attachment "%s"', CSV_TRANSLATE_NAME ), $url ) );
+			CWPIE_Product_Import_Export::log( sprintf( __( '> > Inserted image attachment "%s"', CWPIE_TRANSLATE_NAME ), $url ) );
 			$this->attachments[] = $attachment_id;
 		}
 
@@ -1552,7 +1552,7 @@ class CSV_WC_Product_Import extends WP_Importer {
 		if ( 0 == $filesize ) {
 			@unlink( $upload['file'] );
 			unset( $upload );
-			return new WP_Error( 'import_file_error', __('Zero size file downloaded', CSV_TRANSLATE_NAME) );
+			return new WP_Error( 'import_file_error', __('Zero size file downloaded', CWPIE_TRANSLATE_NAME) );
 		}
 
 		unset( $response );
@@ -1607,7 +1607,7 @@ class CSV_WC_Product_Import extends WP_Importer {
 
 	// Display import page title
 	public function header() {
-		echo '<div class="tool-box"><h3 class="title"><img src="'.CSV_PLUGIN_DIR_URL.'assets/images/import.png" />&nbsp;' . ( empty( $_GET['merge'] ) ? __( 'Product Import', CSV_TRANSLATE_NAME ) : __( 'Merge Products', CSV_TRANSLATE_NAME ) ) . '</h3></div>';
+		echo '<div class="tool-box"><h3 class="title"><img src="'.CWPIE_PLUGIN_DIR_URL.'assets/images/import.png" />&nbsp;' . ( empty( $_GET['merge'] ) ? __( 'Product Import', CWPIE_TRANSLATE_NAME ) : __( 'Merge Products', CWPIE_TRANSLATE_NAME ) ) . '</h3></div>';
 	}
 
 	// Close div.wrap

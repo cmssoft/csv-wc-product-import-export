@@ -5,7 +5,7 @@
 function csv_wc_product_import_cron_intervals_callback($schedules) {
     // add 'Every 15 minutes' cron  interval
     $schedules['csv_every_15_minutes'] = array(
-        'interval' => (15*60),
+        'interval' => (5*60),
         'display' => __('CSV - Every 15 minutes')
     );
     // add 'Every 30 minutes' cron  interval
@@ -65,7 +65,7 @@ function register_csv_wc_product_import_cron_event() {
 	//$current_time = strtotime('+6 hours');
     $current_time = current_time( 'timestamp' );
 
-	$sql = "SELECT * FROM ".$wpdb->prefix."csv_product_import_cron ORDER BY cron_id";
+	$sql = "SELECT * FROM ".$wpdb->prefix."cwpie_product_import_cron ORDER BY cron_id";
 	$results = $wpdb->get_results($sql);
     foreach( $results as $result ) {
     	$cron_time = strtotime($result->start_date);
@@ -85,7 +85,7 @@ global $wpdb;
 //$current_time = strtotime('+6 hours');
 $current_time = current_time( 'timestamp' );
 
-$sql = "SELECT * FROM ".$wpdb->prefix."csv_product_import_cron WHERE status!='Completed' ORDER BY cron_id";
+$sql = "SELECT * FROM ".$wpdb->prefix."cwpie_product_import_cron WHERE status!='Completed' ORDER BY cron_id";
 $results = $wpdb->get_results($sql);
 $cron_files = array();
 
@@ -109,12 +109,14 @@ $GLOBALS['cron_files'] = $cron_files;
  */
 function all_csv_wc_product_import_cron() {
     global $wpdb; 
+    $upload = wp_upload_dir();
+    $upload_dir = $upload['basedir'];
     foreach($GLOBALS['cron_files'] as $cron_file){
         /*$file_name = $GLOBALS['cron_file'];
         $imported_file = $GLOBALS['cron_file'];*/
         $file_name = $cron_file;
         $imported_file = $cron_file;
-        $file = WP_CONTENT_DIR.'/uploads/csv_wc_product_import_export/cron/'.$cron_file;
+        $file = $upload_dir.'/cwpie_product_import_export/cron/'.$cron_file;
         $delimiter = ',';
         $merge_empty_cells = 0;
 
@@ -123,13 +125,13 @@ function all_csv_wc_product_import_cron() {
 
         /*wp_mail( 'pramod.r@vrinsoft.com', 'CSV Cron-1', $file);*/
         if ($file) {
-            $exists_status = $wpdb->get_var( "SELECT status FROM " . $wpdb->prefix . "csv_product_import_cron WHERE file_name = '" . $file_name . "';" );
+            $exists_status = $wpdb->get_var( "SELECT status FROM " . $wpdb->prefix . "cwpie_product_import_cron WHERE file_name = '" . $file_name . "';" );
 
-            $exists_freq = $wpdb->get_var( "SELECT frequency FROM " . $wpdb->prefix . "csv_product_import_cron WHERE file_name = '" . $file_name . "';" );
+            $exists_freq = $wpdb->get_var( "SELECT frequency FROM " . $wpdb->prefix . "cwpie_product_import_cron WHERE file_name = '" . $file_name . "';" );
 
             if(($exists_status=='Pending' || $exists_status=='Running') || $exists_freq!='csv_one_time'){
 
-                $sql = "UPDATE ".$wpdb->prefix."csv_product_import_cron SET status='Running' WHERE file_name='".$file_name."'";
+                $sql = "UPDATE ".$wpdb->prefix."cwpie_product_import_cron SET status='Running' WHERE file_name='".$file_name."'";
                 $wpdb->query($sql);
 
                 //includes
@@ -141,9 +143,9 @@ function all_csv_wc_product_import_cron() {
                     }
                 }
                 
-                require 'importer/csv-wc-class-product-import-cron.php';
-                require 'importer/csv-wc-class-parser-cron.php';
-                require 'importer/csv-wc-class-product_variation-import-cron.php';
+                require 'importer/cwpie-class-product-import-cron.php';
+                require 'importer/cwpie-class-parser-cron.php';
+                require 'importer/cwpie-class-product_variation-import-cron.php';
                 /*wp_mail( 'pramod.r@vrinsoft.com', 'CSV Cron-2', $file);*/
         
 
@@ -158,9 +160,9 @@ function all_csv_wc_product_import_cron() {
 
 
                 //Insert File Log
-                $exists_in_db = $wpdb->get_var( "SELECT log_id FROM " . $wpdb->prefix . "csv_product_import_file_log WHERE file_name = '" . $imported_file . "';" );
+                $exists_in_db = $wpdb->get_var( "SELECT log_id FROM " . $wpdb->prefix . "cwpie_product_import_file_log WHERE file_name = '" . $imported_file . "';" );
                 if (!$exists_in_db) {
-                    $wpdb->insert($wpdb->prefix.'csv_product_import_file_log', array(
+                    $wpdb->insert($wpdb->prefix.'cwpie_product_import_file_log', array(
                         'file_name' => $imported_file,
                         'file_status' => 'Success',
                         'file_date' => $created_at, 
@@ -170,11 +172,11 @@ function all_csv_wc_product_import_cron() {
                 //Import Start
                 $memory    = size_format( wc_let_to_num( ini_get( 'memory_limit' ) ) );
                 $wp_memory = size_format( wc_let_to_num( WP_MEMORY_LIMIT ) );
-                CSV_WC_Product_Import_Export::log( '---[ New Import ] PHP Memory: ' . $memory . ', WP Memory: ' . $wp_memory );
-                CSV_WC_Product_Import_Export::log( __( 'Parsing products CSV.', CSV_TRANSLATE_NAME ) );
-                $parser = new CSV_WC_Parser( 'product' );
+                CWPIE_Product_Import_Export::log( '---[ New Import ] PHP Memory: ' . $memory . ', WP Memory: ' . $wp_memory );
+                CWPIE_Product_Import_Export::log( __( 'Parsing products CSV.', CWPIE_TRANSLATE_NAME ) );
+                $parser = new CWPIE_Parser( 'product' );
                 list( $parsed_data, $raw_headers, $position ) = $parser->parse_data( $file, $delimiter, $mapping, 0 );
-                CSV_WC_Product_Import_Export::log( __( 'Finished parsing products CSV.', CSV_TRANSLATE_NAME ) );
+                CWPIE_Product_Import_Export::log( __( 'Finished parsing products CSV.', CWPIE_TRANSLATE_NAME ) );
                 unset( $import_data );
                 wp_defer_term_counting( true );
                 wp_defer_comment_counting( true );
@@ -182,16 +184,16 @@ function all_csv_wc_product_import_cron() {
 
 
                 //Import Process
-                CSV_WC_Product_Import_Export::log( '---' );
-                CSV_WC_Product_Import_Export::log( __( 'Processing products.', CSV_TRANSLATE_NAME ) );
+                CWPIE_Product_Import_Export::log( '---' );
+                CWPIE_Product_Import_Export::log( __( 'Processing products.', CWPIE_TRANSLATE_NAME ) );
                 foreach ( $parsed_data as $key => &$item ) {
                     $product = $parser->parse_product( $item, $merge_empty_cells );
                     if ( ! is_wp_error( $product ) ) {
                         if($item['tax:product_type']=='variation'){
-                            $variation_product = new CSV_WC_Product_Variation_Import();
+                            $variation_product = new CWPIE_Product_Variation_Import();
                             $variation_product->process_product( $product, $imported_file );
                         }else{
-                            CSV_WC_Product_Import::process_product( $product, $merge_empty_cells, $imported_file );
+                            CWPIE_Product_Import::process_product( $product, $merge_empty_cells, $imported_file );
                         }
                     } 
                     unset( $item, $product );
@@ -199,7 +201,7 @@ function all_csv_wc_product_import_cron() {
                 if ( function_exists( 'wc_update_product_lookup_tables' ) ) {
                     wc_update_product_lookup_tables();
                 }
-                CSV_WC_Product_Import_Export::log( __( 'Finished processing products.', CSV_TRANSLATE_NAME ) );
+                CWPIE_Product_Import_Export::log( __( 'Finished processing products.', CWPIE_TRANSLATE_NAME ) );
                 /*wp_mail( 'pramod.r@vrinsoft.com', 'CSV Cron-5', $file);*/
 
 
@@ -213,15 +215,15 @@ function all_csv_wc_product_import_cron() {
                 do_action( 'import_end' );
                 /*wp_mail( 'pramod.r@vrinsoft.com', 'CSV Cron-6', $file);*/
 
-                $sql = "UPDATE ".$wpdb->prefix."csv_product_import_cron SET status='Completed' WHERE file_name='".$file_name."'";
+                $sql = "UPDATE ".$wpdb->prefix."cwpie_product_import_cron SET status='Completed' WHERE file_name='".$file_name."'";
                 $wpdb->query($sql);
             }
         }
         else{
             //Insert File Log
-            $exists_in_db = $wpdb->get_var( "SELECT log_id FROM " . $wpdb->prefix . "csv_product_import_file_log WHERE file_name = '" . $imported_file . "';" );
+            $exists_in_db = $wpdb->get_var( "SELECT log_id FROM " . $wpdb->prefix . "cwpie_product_import_file_log WHERE file_name = '" . $imported_file . "';" );
             if (!$exists_in_db) {
-                $wpdb->insert($wpdb->prefix.'csv_product_import_file_log', array(
+                $wpdb->insert($wpdb->prefix.'cwpie_product_import_file_log', array(
                     'file_name' => $imported_file,
                     'file_status' => 'Failed',
                     'file_date' => $created_at, 

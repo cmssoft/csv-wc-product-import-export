@@ -2,8 +2,8 @@
 	<div class="import_form_details">
 		<div class="description">
 			<ol>
-				<li><?php _e( 'Upload a CSV file containing product data to import the contents into your shop.', CSV_TRANSLATE_NAME ); ?></li>
-				<li><?php _e( 'Choose a CSV file to upload, then click Upload a file and import.', CSV_TRANSLATE_NAME ); ?></li>
+				<li><?php _e( 'Upload a CSV file containing product data to import the contents into your shop.', CWPIE_TRANSLATE_NAME ); ?></li>
+				<li><?php _e( 'Choose a CSV file to upload, then click Upload a file and import.', CWPIE_TRANSLATE_NAME ); ?></li>
 			</ol>
 		</div>
 		<?php if ( ! empty( $upload_dir['error'] ) ) : ?>
@@ -47,7 +47,7 @@
 						<?php if ( $this->file_url_import_enabled ) : ?>
 						<tr >
 							<th>
-								<label for="file_url"><?php _e( 'OR enter path to file:', CSV_TRANSLATE_NAME ); ?></label>
+								<label for="file_url"><?php _e( 'OR enter path to file:', CWPIE_TRANSLATE_NAME ); ?></label>
 							</th>
 							<td>
 								<?php echo ' ' . ABSPATH . ' '; ?><input type="text" id="file_url" name="file_url" size="50" />
@@ -55,12 +55,12 @@
 						</tr>
 						<?php endif; ?>
 						<tr style="display: none;">
-							<th><label><?php _e( 'Delimiter', CSV_TRANSLATE_NAME ); ?></label><br/></th>
+							<th><label><?php _e( 'Delimiter', CWPIE_TRANSLATE_NAME ); ?></label><br/></th>
 							<td><input type="text" name="delimiter" placeholder="," size="2" /></td>
 						</tr>
 						<tr style="display: none;">
-							<th><label><?php _e( 'Merge empty cells', CSV_TRANSLATE_NAME ); ?></label><br/></th>
-							<td><input type="checkbox" name="merge_empty_cells" placeholder="," size="2" /> <span class="description"><?php _e( 'Check this box to merge empty cells - otherwise (when merging) the empty cells will be ignored when importing things such as attributes.', CSV_TRANSLATE_NAME ); ?></span></td>
+							<th><label><?php _e( 'Merge empty cells', CWPIE_TRANSLATE_NAME ); ?></label><br/></th>
+							<td><input type="checkbox" name="merge_empty_cells" placeholder="," size="2" /> <span class="description"><?php _e( 'Check this box to merge empty cells - otherwise (when merging) the empty cells will be ignored when importing things such as attributes.', CWPIE_TRANSLATE_NAME ); ?></span></td>
 						</tr>
 					</tbody>
 				</table>

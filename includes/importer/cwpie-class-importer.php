@@ -2,7 +2,7 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-class CSV_WC_Importer {
+class CWPIE_Importer {
 	/**
 	* Product Exporter Tool
 	*/
@@ -33,16 +33,16 @@ class CSV_WC_Importer {
 		if ( !defined('DOING_AJAX') ) {
 			$tab = ! empty( $_GET['tab'] ) ? $_GET['tab'] : 'import';
 			echo '<div class="wrap woocommerce">';
-			require CSV_PLUGIN_DIR_PATH.'includes/views/html-admin-tabs.php';
+			require CWPIE_PLUGIN_DIR_PATH.'includes/views/html-admin-tabs.php';
 		}
 
-			require 'csv-wc-class-product-import.php';
-			require 'csv-wc-class-product_variation-import.php';
-			require 'csv-wc-class-parser.php';
+			require 'cwpie-class-product-import.php';
+			require 'cwpie-class-product_variation-import.php';
+			require 'cwpie-class-parser.php';
 
 			// Dispatch
-			$GLOBALS['CSV_WC_Product_Import'] = new CSV_WC_Product_Import();
-			$GLOBALS['CSV_WC_Product_Import'] ->dispatch();
+			$GLOBALS['CWPIE_Product_Import'] = new CWPIE_Product_Import();
+			$GLOBALS['CWPIE_Product_Import'] ->dispatch();
 			
 
 		if ( !defined('DOING_AJAX') ) {	
@@ -65,16 +65,16 @@ class CSV_WC_Importer {
 		if ( !defined('DOING_AJAX') ) {
 			$tab = ! empty( $_GET['tab'] ) ? $_GET['tab'] : 'import';
 			echo '<div class="wrap woocommerce">';
-			require CSV_PLUGIN_DIR_PATH.'includes/views/html-admin-tabs.php';
+			require CWPIE_PLUGIN_DIR_PATH.'includes/views/html-admin-tabs.php';
 		}
 
-			require 'csv-wc-class-product-import.php';
-			require 'csv-wc-class-product_variation-import.php';
-			require 'csv-wc-class-parser.php';
+			require 'cwpie-class-product-import.php';
+			require 'cwpie-class-product_variation-import.php';
+			require 'cwpie-class-parser.php';
 
 			// Dispatch
-			$GLOBALS['CSV_WC_Product_Import'] = new CSV_WC_Product_Variation_Import();
-			$GLOBALS['CSV_WC_Product_Import'] ->dispatch();
+			$GLOBALS['CWPIE_Product_Import'] = new CWPIE_Product_Variation_Import();
+			$GLOBALS['CWPIE_Product_Import'] ->dispatch();
 
 
 		if ( !defined('DOING_AJAX') ) {	

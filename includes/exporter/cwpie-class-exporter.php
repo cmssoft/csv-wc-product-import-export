@@ -3,7 +3,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class CSV_WC_Exporter {
+class CWPIE_Exporter {
 
 	/**
 	 * Product Exporter Tool
@@ -36,9 +36,9 @@ class CSV_WC_Exporter {
 		@ini_set( 'output_buffering', 'Off' );
 		@ini_set( 'output_handler', '' );
 
-		$filename_suffix = 'csv-wc-product-export';
+		$filename_suffix = 'cwpie-product-export';
 		if ( 'product_variation' === $post_type ) {
-			$filename_suffix = 'csv-wc-product-variations-export';
+			$filename_suffix = 'cwpie-product-variations-export';
 		}
 		$filename = sprintf( '%s-%s.csv', $filename_suffix, date_i18n( 'Y_m_d_H_i_s', current_time( 'timestamp' ) ) );
 
@@ -148,7 +148,7 @@ class CSV_WC_Exporter {
 			$row[] = 'gpf:promotion_id';
 		}
 
-		$row = array_map( 'CSV_WC_Exporter::wrap_column', $row );
+		$row = array_map( 'CWPIE_Exporter::wrap_column', $row );
 		fwrite( $fp, implode( ',', $row ) . "\n" );
 		unset( $row );
 
@@ -373,7 +373,7 @@ class CSV_WC_Exporter {
 								$row[] = sanitize_text_field( $product->$column );
 							} else {
 								if(esc_attr( $value )=='parent_sku'){
-									$parent_sku = CSV_WC_Product_Import_Export::get_meta_data( $product->$column, '_sku' );
+									$parent_sku = CWPIE_Product_Import_Export::get_meta_data( $product->$column, '_sku' );
 									$row[] = $parent_sku;
 								}else{
 									$row[] = self::format_data( $product->$column );
@@ -389,7 +389,7 @@ class CSV_WC_Exporter {
 
 							if ( ! $post_parent_title ) continue;
 
-							$parent_sku = CSV_WC_Product_Import_Export::get_meta_data( $product->post_parent, '_sku' );
+							$parent_sku = CWPIE_Product_Import_Export::get_meta_data( $product->post_parent, '_sku' );
 
 							$row[] = $parent_sku;
 
@@ -550,7 +550,7 @@ class CSV_WC_Exporter {
 				}
 
 				// Add to csv
-				$row = array_map( 'CSV_WC_Exporter::wrap_column', $row );
+				$row = array_map( 'CWPIE_Exporter::wrap_column', $row );
 				fwrite( $fp, implode( ',', $row ) . "\n" );
 				unset( $row );
 			}

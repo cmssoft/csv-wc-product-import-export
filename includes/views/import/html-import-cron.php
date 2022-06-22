@@ -6,13 +6,13 @@ $upload_dir = wp_upload_dir();
 $freq = FREQ;
 ?>
 <div class="tool-box">
-	<p class="submit"><a class="docs button-primary" href="<?php echo plugins_url( 'assets/file/sample-products.csv', CSV_WC_FILE ); ?>"><?php _e('Download Sample Products', CSV_TRANSLATE_NAME); ?></a>
+	<p class="submit"><a class="docs button-primary" href="<?php echo plugins_url( 'assets/file/sample-products.csv', CWPIE_FILE ); ?>"><?php _e('Download Sample Products', CWPIE_TRANSLATE_NAME); ?></a>
 	<div class="import_form_details">
-		<h3 class="title"><img src="<?php echo CSV_PLUGIN_DIR_URL?>assets/images/clock.png" />&nbsp;<?php _e('CRON Scheduler', CSV_TRANSLATE_NAME); ?></h3>
+		<h3 class="title"><img src="<?php echo CWPIE_PLUGIN_DIR_URL?>assets/images/clock.png" />&nbsp;<?php _e('CRON Scheduler', CWPIE_TRANSLATE_NAME); ?></h3>
 		<div class="description">
 			<ol>
-				<li><?php _e( 'Upload a CSV file containing product data to import the contents into your shop via Cron Job.', CSV_TRANSLATE_NAME ); ?></li>
-				<li><?php _e( 'Choose a CSV file to upload, then click Upload a file and save.', CSV_TRANSLATE_NAME ); ?></li>
+				<li><?php _e( 'Upload a CSV file containing product data to import the contents into your shop via Cron Job.', CWPIE_TRANSLATE_NAME ); ?></li>
+				<li><?php _e( 'Choose a CSV file to upload, then click Upload a file and save.', CWPIE_TRANSLATE_NAME ); ?></li>
 			</ol>
 		</div>
 		<?php if ( ! empty( $upload_dir['error'] ) ) : ?>

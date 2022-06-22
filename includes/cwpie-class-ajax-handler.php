@@ -2,7 +2,7 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-class CSV_WC_AJAX_Handler {
+class CWPIE_AJAX_Handler {
 	/**
 	* Constructor
 	*/
@@ -23,9 +23,9 @@ class CSV_WC_AJAX_Handler {
 	*/
 	function csv_wc_log_delete(){
 		global $wpdb;
-		$wpdb->delete($wpdb->prefix.'csv_product_import_file_log',array('file_name'=>$_POST['log_id']));
-		$wpdb->delete($wpdb->prefix.'csv_product_import_data_log',array('file_name'=>$_POST['log_id']));
-		@unlink(CSV_UPLOAD_DIR.$_POST['log_id']);
+		$wpdb->delete($wpdb->prefix.'cwpie_product_import_file_log',array('file_name'=>$_POST['log_id']));
+		$wpdb->delete($wpdb->prefix.'cwpie_product_import_data_log',array('file_name'=>$_POST['log_id']));
+		@unlink(CWPIE_UPLOAD_DIR.$_POST['log_id']);
 		exit;
 	}
 
@@ -34,9 +34,9 @@ class CSV_WC_AJAX_Handler {
 	*/
 	function csv_wc_cron_delete(){
 		global $wpdb;
-		$file_name = $wpdb->get_var("SELECT file_name FROM ".$wpdb->prefix."csv_product_import_cron WHERE cron_id=".$_POST['cron_id']);
-		$wpdb->delete($wpdb->prefix.'csv_product_import_cron',array('cron_id'=>$_POST['cron_id']));
-		@unlink(CSV_UPLOAD_CRON_DIR.$file_name);
+		$file_name = $wpdb->get_var("SELECT file_name FROM ".$wpdb->prefix."cwpie_product_import_cron WHERE cron_id=".$_POST['cron_id']);
+		$wpdb->delete($wpdb->prefix.'cwpie_product_import_cron',array('cron_id'=>$_POST['cron_id']));
+		@unlink(CWPIE_UPLOAD_CRON_DIR.$file_name);
 		exit;
 	}
 
@@ -45,7 +45,7 @@ class CSV_WC_AJAX_Handler {
 	*/
 	function csv_wc_cron_status(){
 		global $wpdb;
-		$wpdb->update($wpdb->prefix.'csv_product_import_cron', array(
+		$wpdb->update($wpdb->prefix.'cwpie_product_import_cron', array(
 			'status' => $_POST['cron_status']
 		), array('cron_id'=>$_POST['cron_id']));
 		exit;
@@ -83,7 +83,7 @@ class CSV_WC_AJAX_Handler {
 		
 		// example sql query to get user emails
 		$sql = "SELECT *
-			FROM ".$wpdb->prefix."csv_product_import_cron as m 
+			FROM ".$wpdb->prefix."cwpie_product_import_cron as m 
 			WHERE ".$conditions." ".$sort_by;
 		$rows = $wpdb->get_results($sql);     
 
@@ -209,7 +209,7 @@ class CSV_WC_AJAX_Handler {
 		
 		// example sql query to get user emails
 		$sql = "SELECT *
-			FROM ".$wpdb->prefix."csv_product_import_file_log as m 
+			FROM ".$wpdb->prefix."cwpie_product_import_file_log as m 
 			WHERE ".$conditions." ".$sort_by;
 		$rows = $wpdb->get_results($sql);     
 
@@ -332,7 +332,7 @@ class CSV_WC_AJAX_Handler {
             
             // example sql query to get user emails
             $sql = "SELECT *
-                FROM ".$wpdb->prefix."csv_product_import_data_log as m 
+                FROM ".$wpdb->prefix."cwpie_product_import_data_log as m 
                 WHERE m.file_name='".$filename."' ".$conditions." ".$sort_by;
             $rows = $wpdb->get_results($sql);     
 
@@ -443,11 +443,11 @@ class CSV_WC_AJAX_Handler {
 				$timezone_format = _x( 'Y-m-d H:i:s', 'timezone date format' );
 				$created_at = date_i18n( $timezone_format );
 		
-				$upload_dir = CSV_UPLOAD_CRON_DIR;
-				$upload_dirname = CSV_UPLOAD_CRON_DIR_NAME;
+				$upload_dir = CWPIE_UPLOAD_CRON_DIR;
+				$upload_dirname = CWPIE_UPLOAD_CRON_DIR_NAME;
 			}else{
-				$upload_dir = CSV_UPLOAD_DIR;
-				$upload_dirname = CSV_UPLOAD_DIR_NAME;
+				$upload_dir = CWPIE_UPLOAD_DIR;
+				$upload_dirname = CWPIE_UPLOAD_DIR_NAME;
 			}
 
             $errors= array();
@@ -495,7 +495,7 @@ class CSV_WC_AJAX_Handler {
                 }
 				
                 if(isset($is_cron) && $is_cron==1 && isset($errors['success'])){
-	                $wpdb->insert($wpdb->prefix.'csv_product_import_cron', array(
+	                $wpdb->insert($wpdb->prefix.'cwpie_product_import_cron', array(
                         'file_name' => $newfilename,
                         'file_path' => $file_path,
                         'start_date' => $start_date,
@@ -517,7 +517,7 @@ class CSV_WC_AJAX_Handler {
 	*/
 	public function csv_import_request() {
 		define( 'WP_LOAD_IMPORTERS', true );
-		CSV_WC_Importer::product_importer();
+		CWPIE_Importer::product_importer();
 	}
 
 	/**
@@ -532,15 +532,15 @@ class CSV_WC_AJAX_Handler {
 		$image = get_post( $id );
 
 		if ( ! $image || 'attachment' != $image->post_type || 'image/' != substr( $image->post_mime_type, 0, 6 ) )
-			die( json_encode( array( 'error' => sprintf( __( 'Failed resize: %s is an invalid image ID.', CSV_TRANSLATE_NAME ), esc_html( $_REQUEST['id'] ) ) ) ) );
+			die( json_encode( array( 'error' => sprintf( __( 'Failed resize: %s is an invalid image ID.', CWPIE_TRANSLATE_NAME ), esc_html( $_REQUEST['id'] ) ) ) ) );
 
 		if ( ! current_user_can( 'manage_woocommerce' ) )
-			$this->die_json_error_msg( $image->ID, __( "Your user account doesn't have permission to resize images", CSV_TRANSLATE_NAME ) );
+			$this->die_json_error_msg( $image->ID, __( "Your user account doesn't have permission to resize images", CWPIE_TRANSLATE_NAME ) );
 
 		$fullsizepath = get_attached_file( $image->ID );
 
 		if ( false === $fullsizepath || ! file_exists( $fullsizepath ) )
-			$this->die_json_error_msg( $image->ID, sprintf( __( 'The originally uploaded image file cannot be found at %s', CSV_TRANSLATE_NAME ), '<code>' . esc_html( $fullsizepath ) . '</code>' ) );
+			$this->die_json_error_msg( $image->ID, sprintf( __( 'The originally uploaded image file cannot be found at %s', CWPIE_TRANSLATE_NAME ), '<code>' . esc_html( $fullsizepath ) . '</code>' ) );
 
 		@set_time_limit( 900 ); // 5 minutes per image should be PLENTY
 
@@ -549,12 +549,12 @@ class CSV_WC_AJAX_Handler {
 		if ( is_wp_error( $metadata ) )
 			$this->die_json_error_msg( $image->ID, $metadata->get_error_message() );
 		if ( empty( $metadata ) )
-			$this->die_json_error_msg( $image->ID, __( 'Unknown failure reason.', CSV_TRANSLATE_NAME ) );
+			$this->die_json_error_msg( $image->ID, __( 'Unknown failure reason.', CWPIE_TRANSLATE_NAME ) );
 
 		// If this fails, then it just means that nothing was changed (old value == new value)
 		wp_update_attachment_metadata( $image->ID, $metadata );
 
-		die( json_encode( array( 'success' => sprintf( __( '&quot;%1$s&quot; (ID %2$s) was successfully resized in %3$s seconds.', CSV_TRANSLATE_NAME ), esc_html( get_the_title( $image->ID ) ), $image->ID, timer_stop() ) ) ) );
+		die( json_encode( array( 'success' => sprintf( __( '&quot;%1$s&quot; (ID %2$s) was successfully resized in %3$s seconds.', CWPIE_TRANSLATE_NAME ), esc_html( get_the_title( $image->ID ) ), $image->ID, timer_stop() ) ) ) );
 	}
 
 	/**
@@ -565,4 +565,4 @@ class CSV_WC_AJAX_Handler {
     }
 }
 
-new CSV_WC_AJAX_Handler();
+new CWPIE_AJAX_Handler();

@@ -10,18 +10,15 @@ Requires PHP: 7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
   
-CSV WooCommerce Product Import & Export Manage your WooCommerce product data by import & export from CSV file.
+Manage your WooCommerce product data by import & export from CSV file.
   
 == Description ==
   
 CSV WC Product Import Export plugin:
-CSV WC Product Import Export, as the name itself explains the plugin. You can import and export woocommerce products with a single plugin, where you get perfect solution to develop a product syncronize csv to woocommerce products. We understand the pain of manualy entries, thus, CSV WC Product Import Export plugin has got your back.
+WooCommerce Product Import Export, as the name itself explains the plugin. You can import and export woocommerce products with a single plugin, where you get perfect solution to develop a product syncronize csv to woocommerce products. We understand the pain of manualy entries, thus, CSV WC Product Import Export plugin has got your back.
 
 Grievance and support:
-Everyone was tired complex procedure of creating many forms; therefore, Vrinsoft has brought solution to all those problems. If you face any problems while developing the form or you have any questions or queries, which are not covered in the FAQs, feel free to contact us. You will find the contact details on the website Link. You can also send the enquiry on the contact details of WordPress or you can ask the questions via email id.
-
-Advantages of CSV WC Product Import Export plugin:
-•	Insert, reengineer, or modify anything the way you want.
+Vrinsoft has brought solution to all those problems. If you face any problems while developing the import and export woocommerce products or you have any questions or queries, which are not covered in the FAQs, feel free to contact us. You will find the contact details on the website Link. You can also send the enquiry on the contact details of WordPress or you can ask the questions via email id.
 
 Core features of the CSV WC Product Import Export plugin:
 •	Developer friendly plugin

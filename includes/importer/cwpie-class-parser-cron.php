@@ -2,7 +2,7 @@
 /**
  * WooCommerce CSV Importer class for managing parsing of CSV files.
  */
-class CSV_WC_Parser {
+class CWPIE_Parser {
 
 	var $row;
 	var $post_type;
@@ -171,7 +171,7 @@ class CSV_WC_Parser {
 	* Parse product
 	*/
 	public function parse_product( $item, $merge_empty_cells = 0 ) {
-		global $CSV_WC_Product_Import, $wpdb;
+		global $CWPIE_Product_Import, $wpdb;
 
 		if($item['tax:product_type']=='variation'){
 			$_GET['import_page'] = 'csv_wc_variation';
@@ -204,11 +204,11 @@ class CSV_WC_Parser {
 		if ( $merging ) {
 
 			$product['merging'] = true;
-			CSV_WC_Product_Import_Export::log( sprintf( __( '> Row %s - preparing for merge.', CSV_TRANSLATE_NAME ), $this->row ) );
+			CWPIE_Product_Import_Export::log( sprintf( __( '> Row %s - preparing for merge.', CWPIE_TRANSLATE_NAME ), $this->row ) );
 
 			// Required fields
 			if ( ! $post_id && empty( $item['sku'] ) ) {
-				CSV_WC_Product_Import_Export::log( __( '> > Cannot merge without sku. Importing instead.', CSV_TRANSLATE_NAME) );
+				CWPIE_Product_Import_Export::log( __( '> > Cannot merge without sku. Importing instead.', CWPIE_TRANSLATE_NAME) );
 				$merging = false;
 			} else {
 				// Check product exists
@@ -226,14 +226,14 @@ class CSV_WC_Parser {
 					if (  $is_variation && ! $found_product_id && empty( $item[ 'post_title' ] ) ) {
 						$merging = false;
 					} else if ( ! $found_product_id && empty( $item['post_title'] ) ) {
-						CSV_WC_Product_Import_Export::log( sprintf(__( '> > Skipped. Cannot find product with sku %s.', CSV_TRANSLATE_NAME), $item['sku']) );
-						return new WP_Error( 'parse-error', __( 'Skipped. Cannot find product with sku.', CSV_TRANSLATE_NAME ) );
+						CWPIE_Product_Import_Export::log( sprintf(__( '> > Skipped. Cannot find product with sku %s.', CWPIE_TRANSLATE_NAME), $item['sku']) );
+						return new WP_Error( 'parse-error', __( 'Skipped. Cannot find product with sku.', CWPIE_TRANSLATE_NAME ) );
 					} elseif ( ! $found_product_id ) {
-						CSV_WC_Product_Import_Export::log( sprintf(__( '> > Skipped. Cannot find product with sku %s. Importing instead.', CSV_TRANSLATE_NAME), $item['sku']) );
+						CWPIE_Product_Import_Export::log( sprintf(__( '> > Skipped. Cannot find product with sku %s. Importing instead.', CWPIE_TRANSLATE_NAME), $item['sku']) );
 						$merging = false;
 					} else {
 						$post_id = $found_product_id;
-						CSV_WC_Product_Import_Export::log( sprintf(__( '> > Found product with ID %s.', CSV_TRANSLATE_NAME), $post_id) );
+						CWPIE_Product_Import_Export::log( sprintf(__( '> > Found product with ID %s.', CWPIE_TRANSLATE_NAME), $post_id) );
 					}
 				}
 			}
@@ -243,12 +243,12 @@ class CSV_WC_Parser {
 
 			$product['merging'] = false;
 
-			CSV_WC_Product_Import_Export::log( sprintf( __('> Row %s - preparing for import.', CSV_TRANSLATE_NAME), $this->row ) );
+			CWPIE_Product_Import_Export::log( sprintf( __('> Row %s - preparing for import.', CWPIE_TRANSLATE_NAME), $this->row ) );
 
 			// Required fields
 			if ( $this->post_type == 'product' && empty( $item['post_title'] ) ) {
-				CSV_WC_Product_Import_Export::log( __( '> > Skipped. No post_title set for new product.', CSV_TRANSLATE_NAME) );
-				return new WP_Error( 'parse-error', __( 'No post_title set for new product.', CSV_TRANSLATE_NAME ) );
+				CWPIE_Product_Import_Export::log( __( '> > Skipped. No post_title set for new product.', CWPIE_TRANSLATE_NAME) );
+				return new WP_Error( 'parse-error', __( 'No post_title set for new product.', CWPIE_TRANSLATE_NAME ) );
 			}
 
 		}
@@ -287,14 +287,14 @@ class CSV_WC_Parser {
 				! isset( $postmeta['regular_price'] ) ||
 				( isset( $postmeta['regular_price'] ) && '' === trim( $postmeta['regular_price'] ) && ! $merge_empty_cells ) 
 			) {
-				$postmeta['regular_price'] = CSV_WC_Product_Import_Export::get_meta_data( $post_id, '_regular_price' );
+				$postmeta['regular_price'] = CWPIE_Product_Import_Export::get_meta_data( $post_id, '_regular_price' );
 			}
 
 			if (
 				! isset( $postmeta['sale_price'] ) ||
 				( isset( $postmeta['sale_price'] ) && '' === trim( $postmeta['sale_price'] ) && ! $merge_empty_cells ) 
 			) {
-				$postmeta['sale_price'] = CSV_WC_Product_Import_Export::get_meta_data( $post_id, '_sale_price' );
+				$postmeta['sale_price'] = CWPIE_Product_Import_Export::get_meta_data( $post_id, '_sale_price' );
 			}
 		}
 
@@ -383,14 +383,14 @@ class CSV_WC_Parser {
 				$mode = substr( $postmeta['stock'], 0, 3 );
 
 				if ( $mode == '(+)' ) {
-					$old_stock 	= absint( CSV_WC_Product_Import_Export::get_meta_data( $post_id, '_stock' ) );
+					$old_stock 	= absint( CWPIE_Product_Import_Export::get_meta_data( $post_id, '_stock' ) );
 					$amount 	= absint( substr( $postmeta['stock'], 3 ) );
 					$new_stock 	= $old_stock + $amount;
 					$postmeta['stock'] = $new_stock;
 				}
 
 				if ( $mode == '(-)' ) {
-					$old_stock 	= absint( CSV_WC_Product_Import_Export::get_meta_data( $post_id, '_stock' ) );
+					$old_stock 	= absint( CWPIE_Product_Import_Export::get_meta_data( $post_id, '_stock' ) );
 					$amount 	= absint( substr( $postmeta['stock'], 3 ) );
 					$new_stock 	= $old_stock - $amount;
 					$postmeta['stock'] = $new_stock;
@@ -464,7 +464,7 @@ class CSV_WC_Parser {
 			elseif ( strstr( $key, 'meta:attribute_pa_' ) ) {
 
 				// Get meta key name
-				$meta_key = ( isset( $CSV_WC_Product_Import->raw_headers[$key] ) ) ? $CSV_WC_Product_Import->raw_headers[$key] : $key;
+				$meta_key = ( isset( $CWPIE_Product_Import->raw_headers[$key] ) ) ? $CWPIE_Product_Import->raw_headers[$key] : $key;
 				$meta_key = trim( str_replace( 'meta:', '', $meta_key ) );
 
 				// Convert to slug
@@ -484,7 +484,7 @@ class CSV_WC_Parser {
 			elseif ( strstr( $key, 'meta:' ) ) {
 
 				// Get meta key name
-				$meta_key = ( isset( $CSV_WC_Product_Import->raw_headers[$key] ) ) ? $CSV_WC_Product_Import->raw_headers[$key] : $key;
+				$meta_key = ( isset( $CWPIE_Product_Import->raw_headers[$key] ) ) ? $CWPIE_Product_Import->raw_headers[$key] : $key;
 				$meta_key = trim( str_replace( 'meta:', '', $meta_key ) );
 
 				// Decode JSON
@@ -510,7 +510,7 @@ class CSV_WC_Parser {
 
 				// Exists?
 				if ( ! taxonomy_exists( $taxonomy ) ) {
-					CSV_WC_Product_Import_Export::log( sprintf( __('> > Skipping taxonomy "%s" - it does not exist.', CSV_TRANSLATE_NAME), $taxonomy ) );
+					CWPIE_Product_Import_Export::log( sprintf( __('> > Skipping taxonomy "%s" - it does not exist.', CWPIE_TRANSLATE_NAME), $taxonomy ) );
 					continue;
 				}
 
@@ -519,7 +519,7 @@ class CSV_WC_Parser {
 					$term = strtolower( $value );
 
 					if ( ! array_key_exists( $term, $this->allowed_product_types ) ) {
-						CSV_WC_Product_Import_Export::log( sprintf( __('> > > Product type "%s" not allowed - using simple.', CSV_TRANSLATE_NAME), $term ) );
+						CWPIE_Product_Import_Export::log( sprintf( __('> > > Product type "%s" not allowed - using simple.', CWPIE_TRANSLATE_NAME), $term ) );
 						$term_id = $this->allowed_product_types['simple'];
 					} else {
 						$term_id = $this->allowed_product_types[ $term ];
@@ -565,7 +565,7 @@ class CSV_WC_Parser {
 								 */
 								$term_may_exist = term_exists( $term, $taxonomy, absint( $parent ) );
 
-								CSV_WC_Product_Import_Export::log( sprintf( __( '> > (' . __LINE__ . ') Term %s (%s) exists? %s', CSV_TRANSLATE_NAME ), sanitize_text_field( $term ), esc_html( $taxonomy ), $term_may_exist ? print_r( $term_may_exist, true ) : '-' ) );
+								CWPIE_Product_Import_Export::log( sprintf( __( '> > (' . __LINE__ . ') Term %s (%s) exists? %s', CWPIE_TRANSLATE_NAME ), sanitize_text_field( $term ), esc_html( $taxonomy ), $term_may_exist ? print_r( $term_may_exist, true ) : '-' ) );
 
 								if ( is_array( $term_may_exist ) ) {
 
@@ -591,7 +591,7 @@ class CSV_WC_Parser {
 									if ( ! is_wp_error( $t ) ) {
 										$term_id = $t['term_id'];
 									} else {
-										CSV_WC_Product_Import_Export::log( sprintf( __( '> > (' . __LINE__ . ') Failed to import term %s, parent %s - %s', CSV_TRANSLATE_NAME ), sanitize_text_field( $term ), sanitize_text_field( $parent ), sanitize_text_field( $taxonomy ) ) );
+										CWPIE_Product_Import_Export::log( sprintf( __( '> > (' . __LINE__ . ') Failed to import term %s, parent %s - %s', CWPIE_TRANSLATE_NAME ), sanitize_text_field( $term ), sanitize_text_field( $parent ), sanitize_text_field( $taxonomy ) ) );
 										break;
 									}
 								}
@@ -631,7 +631,7 @@ class CSV_WC_Parser {
 								if ( ! is_wp_error( $t ) ) {
 									$term_id = $t['term_id'];
 								} else {
-									CSV_WC_Product_Import_Export::log( sprintf( __( '> > Failed to import term %s %s', CSV_TRANSLATE_NAME ), esc_html($raw_term), esc_html($taxonomy) ) );
+									CWPIE_Product_Import_Export::log( sprintf( __( '> > Failed to import term %s %s', CWPIE_TRANSLATE_NAME ), esc_html($raw_term), esc_html($taxonomy) ) );
 									break;
 								}
 							}
@@ -665,7 +665,7 @@ class CSV_WC_Parser {
 			elseif ( strstr( $key, 'attribute:' ) ) {
 
 				$attribute_key 	= sanitize_title( trim( str_replace( 'attribute:', '', $key ) ) );
-				$attribute_name = str_replace( 'attribute:', '', $CSV_WC_Product_Import->raw_headers[ $key ] );
+				$attribute_name = str_replace( 'attribute:', '', $CWPIE_Product_Import->raw_headers[ $key ] );
 
 				if ( ! $attribute_key ) {
 					continue;
@@ -681,7 +681,7 @@ class CSV_WC_Parser {
 
 						$nicename = strtolower( sanitize_title( str_replace( 'pa_', '', $taxonomy ) ) );
 
-						CSV_WC_Product_Import_Export::log( sprintf( __('> > Attribute taxonomy "%s" does not exist. Adding it. Nicename: %s', CSV_TRANSLATE_NAME), $taxonomy, $nicename ) );
+						CWPIE_Product_Import_Export::log( sprintf( __('> > Attribute taxonomy "%s" does not exist. Adding it. Nicename: %s', CWPIE_TRANSLATE_NAME), $taxonomy, $nicename ) );
 
 						$exists_in_db = $wpdb->get_var( "SELECT attribute_id FROM " . $wpdb->prefix . "woocommerce_attribute_taxonomies WHERE attribute_name = '" . $nicename . "';" );
 
@@ -694,7 +694,7 @@ class CSV_WC_Parser {
 						    wp_schedule_single_event( time(), 'woocommerce_flush_rewrite_rules' );
 						    delete_transient('wc_attribute_taxonomies');
 						} else {
-							CSV_WC_Product_Import_Export::log( sprintf( __('> > Attribute taxonomy %s already exists in DB.', CSV_TRANSLATE_NAME), $taxonomy ) );
+							CWPIE_Product_Import_Export::log( sprintf( __('> > Attribute taxonomy %s already exists in DB.', CWPIE_TRANSLATE_NAME), $taxonomy ) );
 						}
 
 						// Register the taxonomy now so that the import works!
@@ -733,13 +733,13 @@ class CSV_WC_Parser {
 								if ( ! is_wp_error( $t ) ) {
 									$term_id = $t['term_id'];
 
-									CSV_WC_Product_Import_Export::log( sprintf( __( '> > Inserted Raw Term %s ID = %s', CSV_TRANSLATE_NAME ), esc_html( $raw_term ), $term_id ) );
+									CWPIE_Product_Import_Export::log( sprintf( __( '> > Inserted Raw Term %s ID = %s', CWPIE_TRANSLATE_NAME ), esc_html( $raw_term ), $term_id ) );
 								} else {
-									CSV_WC_Product_Import_Export::log( sprintf( __( '> > Failed to import term %s %s', CSV_TRANSLATE_NAME ), esc_html($raw_term), esc_html($taxonomy) ) );
+									CWPIE_Product_Import_Export::log( sprintf( __( '> > Failed to import term %s %s', CWPIE_TRANSLATE_NAME ), esc_html($raw_term), esc_html($taxonomy) ) );
 									break;
 								}
 							} else {
-								CSV_WC_Product_Import_Export::log( sprintf( __( '> > Raw Term %s ID = %s', CSV_TRANSLATE_NAME ), esc_html( $raw_term ), $term_id ) );
+								CWPIE_Product_Import_Export::log( sprintf( __( '> > Raw Term %s ID = %s', CWPIE_TRANSLATE_NAME ), esc_html( $raw_term ), $term_id ) );
 							}
 
 							if ( $term_id ) {
@@ -757,7 +757,7 @@ class CSV_WC_Parser {
 
 					// Ensure we have original attributes
 					if ( is_null( $attributes ) && $merging ) {
-						$attributes = array_filter( (array) CSV_WC_Product_Import_Export::get_meta_data( $post_id, '_product_attributes' ) );
+						$attributes = array_filter( (array) CWPIE_Product_Import_Export::get_meta_data( $post_id, '_product_attributes' ) );
 					} elseif ( is_null( $attributes ) ) {
 						$attributes = array();
 					}
@@ -827,7 +827,7 @@ class CSV_WC_Parser {
 				// Ensure we have original attributes
 				if ( ! isset( $attributes[ $attribute_key ] ) ) {
 					if ( $merging ) {
-						$existing_attributes = array_filter( (array) CSV_WC_Product_Import_Export::get_meta_data( $post_id, '_product_attributes' ) );
+						$existing_attributes = array_filter( (array) CWPIE_Product_Import_Export::get_meta_data( $post_id, '_product_attributes' ) );
 						$attributes[ $attribute_key ] = isset( $existing_attributes[ $attribute_key ] ) ? $existing_attributes[ $attribute_key ] : array();
 					} else {
 						$attributes[ $attribute_key ] = array();
@@ -850,7 +850,7 @@ class CSV_WC_Parser {
 
 				// Ensure we have original attributes
 				if ( is_null( $default_attributes ) && $merging ) {
-					$default_attributes = array_filter( (array) CSV_WC_Product_Import_Export::get_meta_data( $post_id, '_default_attributes' ) );
+					$default_attributes = array_filter( (array) CWPIE_Product_Import_Export::get_meta_data( $post_id, '_default_attributes' ) );
 				} elseif ( is_null( $default_attributes ) ) {
 					$default_attributes = array();
 				}
@@ -867,7 +867,7 @@ class CSV_WC_Parser {
 
 				// Get original values
 				if ( is_null( $gpf_data ) && $merging ) {
-					$gpf_data = array_filter( (array) CSV_WC_Product_Import_Export::get_meta_data( $post_id, '_woocommerce_gpf_data' ) );
+					$gpf_data = array_filter( (array) CWPIE_Product_Import_Export::get_meta_data( $post_id, '_woocommerce_gpf_data' ) );
 				} elseif ( is_null( $gpf_data ) ) {
 					$gpf_data = array(
 						'availability'            => '',

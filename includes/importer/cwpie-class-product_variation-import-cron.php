@@ -2,10 +2,10 @@
 /**
 * WordPress Importer class for managing the import process of a CSV file
 */
-if ( ! class_exists( 'CSV_WC_Product_Import' ) ) {
+if ( ! class_exists( 'CWPIE_Product_Import' ) ) {
 	return;
 }
-class CSV_WC_Product_Variation_Import extends CSV_WC_Product_Import {
+class CWPIE_Product_Variation_Import extends CWPIE_Product_Import {
 	/**
 	* Constructor
 	*/
@@ -46,26 +46,26 @@ class CSV_WC_Product_Variation_Import extends CSV_WC_Product_Import {
 		$processing_product_id = absint( $post['post_id'] );
 		$insert_meta_data      = array();
 
-		$log_id = $wpdb->get_var( $wpdb->prepare( "SELECT log_id FROM ".$wpdb->prefix."csv_product_import_data_log WHERE product_sku = %s AND file_name = %s", $post['sku'],  $imported_file) );
+		$log_id = $wpdb->get_var( $wpdb->prepare( "SELECT log_id FROM ".$wpdb->prefix."cwpie_product_import_data_log WHERE product_sku = %s AND file_name = %s", $post['sku'],  $imported_file) );
 
 		if($log_id){
 			return;
 		}
 
 		if ( empty( $post['post_parent'] ) ) {
-			CSV_WC_Product_Variation_Import::add_import_result( 'skipped', __( 'No product variation parent set', CSV_TRANSLATE_NAME ), $processing_product_id, 'Not set', $post['sku'] );
-			CSV_WC_Product_Import_Export::log( __('> Skipping - no post parent set.', CSV_TRANSLATE_NAME) );
+			CWPIE_Product_Variation_Import::add_import_result( 'skipped', __( 'No product variation parent set', CWPIE_TRANSLATE_NAME ), $processing_product_id, 'Not set', $post['sku'] );
+			CWPIE_Product_Import_Export::log( __('> Skipping - no post parent set.', CWPIE_TRANSLATE_NAME) );
 
 			//Insert Data Log
 			if(!empty($imported_file)){
-				$wpdb->insert($wpdb->prefix.'csv_product_import_data_log', array(
+				$wpdb->insert($wpdb->prefix.'cwpie_product_import_data_log', array(
 		            'file_name' => $imported_file,
 		            'product_id' => $processing_product_id,
 		            'product_sku' => $post['sku'],
 		            'product_name' => get_the_title( $post['post_parent'] ),
 		            'product_type' => '',
 		            'status' => 0, 
-		            'status_message' => __( 'No product variation parent set', CSV_TRANSLATE_NAME ),
+		            'status_message' => __( 'No product variation parent set', CWPIE_TRANSLATE_NAME ),
 		            'created_at' => $created_at
 		        ));
 			}
@@ -74,19 +74,19 @@ class CSV_WC_Product_Variation_Import extends CSV_WC_Product_Import {
 		}
 
 		if ( ! empty( $processing_product_id ) && isset( $this->processed_posts[ $processing_product_id ] ) ) {
-			CSV_WC_Product_Variation_Import::add_import_result( 'skipped', __( 'Product variation already processed', CSV_TRANSLATE_NAME ), $processing_product_id, get_the_title( $post['post_parent'] ), $post['sku'] );
-			CSV_WC_Product_Import_Export::log( __('> Post ID already processed. Skipping.', CSV_TRANSLATE_NAME) );
+			CWPIE_Product_Variation_Import::add_import_result( 'skipped', __( 'Product variation already processed', CWPIE_TRANSLATE_NAME ), $processing_product_id, get_the_title( $post['post_parent'] ), $post['sku'] );
+			CWPIE_Product_Import_Export::log( __('> Post ID already processed. Skipping.', CWPIE_TRANSLATE_NAME) );
 
 			//Insert Data Log
 			if(!empty($imported_file)){
-				$wpdb->insert($wpdb->prefix.'csv_product_import_data_log', array(
+				$wpdb->insert($wpdb->prefix.'cwpie_product_import_data_log', array(
 		            'file_name' => $imported_file,
 		            'product_id' => $processing_product_id,
 		            'product_sku' => $post['sku'],
 		            'product_name' => get_the_title( $post['post_parent'] ),
 		            'product_type' => '',
 		            'status' => 0, 
-		            'status_message' => __( 'Product variation already processed', CSV_TRANSLATE_NAME ),
+		            'status_message' => __( 'Product variation already processed', CWPIE_TRANSLATE_NAME ),
 		            'created_at' => $created_at
 		        ));
 			}
@@ -95,19 +95,19 @@ class CSV_WC_Product_Variation_Import extends CSV_WC_Product_Import {
 		}
 
 		if ( isset( $post['post_status'] ) && 'auto-draft' === $post['post_status'] ) {
-			CSV_WC_Product_Variation_Import::add_import_result( 'skipped', __( 'Skipping auto-draft', CSV_TRANSLATE_NAME ), $processing_product_id, get_the_title( $post['post_parent'] ), $post['sku'] );
-			CSV_WC_Product_Import_Export::log( __('> Skipping auto-draft.', CSV_TRANSLATE_NAME) );
+			CWPIE_Product_Variation_Import::add_import_result( 'skipped', __( 'Skipping auto-draft', CWPIE_TRANSLATE_NAME ), $processing_product_id, get_the_title( $post['post_parent'] ), $post['sku'] );
+			CWPIE_Product_Import_Export::log( __('> Skipping auto-draft.', CWPIE_TRANSLATE_NAME) );
 
 			//Insert Data Log
 			if(!empty($imported_file)){
-				$wpdb->insert($wpdb->prefix.'csv_product_import_data_log', array(
+				$wpdb->insert($wpdb->prefix.'cwpie_product_import_data_log', array(
 		            'file_name' => $imported_file,
 		            'product_id' => $processing_product_id,
 		            'product_sku' => $post['sku'],
 		            'product_name' => get_the_title( $post['post_parent'] ),
 		            'product_type' => '',
 		            'status' => 0, 
-		            'status_message' => __( 'Skipping auto-draft', CSV_TRANSLATE_NAME ),
+		            'status_message' => __( 'Skipping auto-draft', CWPIE_TRANSLATE_NAME ),
 		            'created_at' => $created_at
 		        ));
 			}
@@ -119,19 +119,19 @@ class CSV_WC_Product_Variation_Import extends CSV_WC_Product_Import {
 		$post_parent_exists = $wpdb->get_var( $wpdb->prepare( "SELECT ID FROM {$wpdb->posts} WHERE ID = %d", $post_parent ) );
 
 		if ( ! $post_parent_exists ) {
-			CSV_WC_Product_Variation_Import::add_import_result( 'failed', __( 'Variation parent does not exist', CSV_TRANSLATE_NAME ), $processing_product_id, 'Does not exist', $post['sku'] );
-			CSV_WC_Product_Import_Export::log( sprintf( __('> Variation parent does not exist! (#%d)', CSV_TRANSLATE_NAME), $post_parent ) );
+			CWPIE_Product_Variation_Import::add_import_result( 'failed', __( 'Variation parent does not exist', CWPIE_TRANSLATE_NAME ), $processing_product_id, 'Does not exist', $post['sku'] );
+			CWPIE_Product_Import_Export::log( sprintf( __('> Variation parent does not exist! (#%d)', CWPIE_TRANSLATE_NAME), $post_parent ) );
 
 			//Insert Data Log
 			if(!empty($imported_file)){
-				$wpdb->insert($wpdb->prefix.'csv_product_import_data_log', array(
+				$wpdb->insert($wpdb->prefix.'cwpie_product_import_data_log', array(
 		            'file_name' => $imported_file,
 		            'product_id' => $processing_product_id,
 		            'product_sku' => $post['sku'],
 		            'product_name' => get_the_title( $post['post_parent'] ),
 		            'product_type' => '',
 		            'status' => 0, 
-		            'status_message' => __( 'Variation parent does not exist', CSV_TRANSLATE_NAME ),
+		            'status_message' => __( 'Variation parent does not exist', CWPIE_TRANSLATE_NAME ),
 		            'created_at' => $created_at
 		        ));
 			}
@@ -141,19 +141,19 @@ class CSV_WC_Product_Variation_Import extends CSV_WC_Product_Import {
 
 		// Check post type to avoid conflicts with IDs
 		if ( $merging && get_post_type( $processing_product_id ) !== 'product_variation' ) {
-			CSV_WC_Product_Variation_Import::add_import_result( 'skipped', __( 'Post is not a product variation', CSV_TRANSLATE_NAME ), $processing_product_id, 'Not a variation', $post['sku'] );
-			CSV_WC_Product_Import_Export::log( sprintf( __('> &#8220;%s&#8221; is not a product variation.', CSV_TRANSLATE_NAME), $processing_product_id ), true );
+			CWPIE_Product_Variation_Import::add_import_result( 'skipped', __( 'Post is not a product variation', CWPIE_TRANSLATE_NAME ), $processing_product_id, 'Not a variation', $post['sku'] );
+			CWPIE_Product_Import_Export::log( sprintf( __('> &#8220;%s&#8221; is not a product variation.', CWPIE_TRANSLATE_NAME), $processing_product_id ), true );
 
 			//Insert Data Log
 			if(!empty($imported_file)){
-				$wpdb->insert($wpdb->prefix.'csv_product_import_data_log', array(
+				$wpdb->insert($wpdb->prefix.'cwpie_product_import_data_log', array(
 		            'file_name' => $imported_file,
 		            'product_id' => $processing_product_id,
 		            'product_sku' => $post['sku'],
 		            'product_name' => get_the_title( $post['post_parent'] ),
 		            'product_type' => '',
 		            'status' => 0, 
-		            'status_message' => __( 'Post is not a product variation', CSV_TRANSLATE_NAME ),
+		            'status_message' => __( 'Post is not a product variation', CWPIE_TRANSLATE_NAME ),
 		            'created_at' => $created_at
 		        ));
 			}
@@ -167,7 +167,7 @@ class CSV_WC_Product_Variation_Import extends CSV_WC_Product_Import {
 			// Only merge fields which are set
 			$post_id = $processing_product_id;
 
-			CSV_WC_Product_Import_Export::log( sprintf( __('> Merging post ID %s.', CSV_TRANSLATE_NAME), $post_id ) );
+			CWPIE_Product_Import_Export::log( sprintf( __('> Merging post ID %s.', CWPIE_TRANSLATE_NAME), $post_id ) );
 
 			$postdata = array( 'ID' => $post_id );
 			if (!empty($post['post_date'])) $postdata['post_date'] = date("Y-m-d H:i:s", strtotime( $post['post_date'] ) );
@@ -178,9 +178,9 @@ class CSV_WC_Product_Variation_Import extends CSV_WC_Product_Import {
 
 			if ( sizeof( $postdata ) ) {
 				if ( wp_update_post( $postdata ) ) {
-					CSV_WC_Product_Import_Export::log( __( '> Merged post data: ', CSV_TRANSLATE_NAME ) . print_r( $postdata, true ) );
+					CWPIE_Product_Import_Export::log( __( '> Merged post data: ', CWPIE_TRANSLATE_NAME ) . print_r( $postdata, true ) );
 				} else {
-					CSV_WC_Product_Import_Export::log( __( '> Failed to merge post data: ', CSV_TRANSLATE_NAME ) . print_r( $postdata, true ) );
+					CWPIE_Product_Import_Export::log( __( '> Failed to merge post data: ', CWPIE_TRANSLATE_NAME ) . print_r( $postdata, true ) );
 				}
 			}
 
@@ -192,19 +192,19 @@ class CSV_WC_Product_Variation_Import extends CSV_WC_Product_Import {
 			}
 
 			if ( $this->variation_exists( $post_parent, $processing_product_id, $processing_product_sku ) ) {
-				CSV_WC_Product_Variation_Import::add_import_result( 'skipped', __( 'Variation already exists', CSV_TRANSLATE_NAME ), $processing_product_id, get_the_title( $post['post_parent'] ), $processing_product_sku );
-				CSV_WC_Product_Import_Export::log( sprintf( __( '> &#8220;%s&#8221; already exists.', CSV_TRANSLATE_NAME ), esc_html( $post['post_title'] ) ), true );
+				CWPIE_Product_Variation_Import::add_import_result( 'skipped', __( 'Variation already exists', CWPIE_TRANSLATE_NAME ), $processing_product_id, get_the_title( $post['post_parent'] ), $processing_product_sku );
+				CWPIE_Product_Import_Export::log( sprintf( __( '> &#8220;%s&#8221; already exists.', CWPIE_TRANSLATE_NAME ), esc_html( $post['post_title'] ) ), true );
 
 				//Insert Data Log
 				if(!empty($imported_file)){
-					$wpdb->insert($wpdb->prefix.'csv_product_import_data_log', array(
+					$wpdb->insert($wpdb->prefix.'cwpie_product_import_data_log', array(
 			            'file_name' => $imported_file,
 			            'product_id' => $processing_product_id,
 			            'product_sku' => $processing_product_sku,
 			            'product_name' => get_the_title( $post['post_parent'] ),
 			            'product_type' => '',
 			            'status' => 0, 
-			            'status_message' => __( 'Variation already exists', CSV_TRANSLATE_NAME ),
+			            'status_message' => __( 'Variation already exists', CWPIE_TRANSLATE_NAME ),
 			            'created_at' => $created_at
 			        ));
 				}
@@ -214,7 +214,7 @@ class CSV_WC_Product_Variation_Import extends CSV_WC_Product_Import {
 			}
 
 			// Insert product
-			CSV_WC_Product_Import_Export::log( __('> Inserting variation.', CSV_TRANSLATE_NAME) );
+			CWPIE_Product_Import_Export::log( __('> Inserting variation.', CWPIE_TRANSLATE_NAME) );
 
 			$postdata = array(
 				'import_id' 	=> $processing_product_id,
@@ -230,20 +230,20 @@ class CSV_WC_Product_Variation_Import extends CSV_WC_Product_Import {
 
 			if ( is_wp_error( $post_id ) ) {
 
-				CSV_WC_Product_Variation_Import::add_import_result( 'failed', __( 'Failed to import product variation', CSV_TRANSLATE_NAME ), $processing_product_id, get_the_title( $post['post_parent'] ), $post['sku'] );
+				CWPIE_Product_Variation_Import::add_import_result( 'failed', __( 'Failed to import product variation', CWPIE_TRANSLATE_NAME ), $processing_product_id, get_the_title( $post['post_parent'] ), $post['sku'] );
 
-				CSV_WC_Product_Import_Export::log( sprintf( __( 'Failed to import product &#8220;%s&#8221;', CSV_TRANSLATE_NAME ), esc_html($post['post_title']) ) );
+				CWPIE_Product_Import_Export::log( sprintf( __( 'Failed to import product &#8220;%s&#8221;', CWPIE_TRANSLATE_NAME ), esc_html($post['post_title']) ) );
 
 				//Insert Data Log
 				if(!empty($imported_file)){
-					$wpdb->insert($wpdb->prefix.'csv_product_import_data_log', array(
+					$wpdb->insert($wpdb->prefix.'cwpie_product_import_data_log', array(
 			            'file_name' => $imported_file,
 			            'product_id' => $processing_product_id,
 			            'product_sku' => $post['sku'],
 			            'product_name' => get_the_title( $post['post_parent'] ),
 			            'product_type' => '',
 			            'status' => 0, 
-			            'status_message' => __( 'Failed to import product variation', CSV_TRANSLATE_NAME ),
+			            'status_message' => __( 'Failed to import product variation', CWPIE_TRANSLATE_NAME ),
 			            'created_at' => $created_at
 			        ));
 				}
@@ -251,7 +251,7 @@ class CSV_WC_Product_Variation_Import extends CSV_WC_Product_Import {
 				return;
 
 			} else {
-				CSV_WC_Product_Import_Export::log( sprintf( __('> Inserted - post ID is %s.', CSV_TRANSLATE_NAME ), $post_id ) );
+				CWPIE_Product_Import_Export::log( sprintf( __('> Inserted - post ID is %s.', CWPIE_TRANSLATE_NAME ), $post_id ) );
 
 				// Set post title now we have an ID
 				$postdata['ID']         = $post_id;
@@ -314,13 +314,13 @@ class CSV_WC_Product_Variation_Import extends CSV_WC_Product_Import {
 					}
 				}
 
-				CSV_WC_Product_Import_Export::log( __( '> > Old images processed', CSV_TRANSLATE_NAME ) );
+				CWPIE_Product_Import_Export::log( __( '> > Old images processed', CWPIE_TRANSLATE_NAME ) );
 
 			}
 
 			if ( $post['images'] ) foreach ( $post['images'] as $image ) {
 
-				CSV_WC_Product_Import_Export::log( sprintf( __( '> > Importing image "%s"', CSV_TRANSLATE_NAME ), $image ) );
+				CWPIE_Product_Import_Export::log( sprintf( __( '> > Importing image "%s"', CWPIE_TRANSLATE_NAME ), $image ) );
 
 				$wp_filetype = wp_check_filetype( basename( $image ), null );
 				$wp_upload_dir = wp_upload_dir();
@@ -344,11 +344,11 @@ class CSV_WC_Product_Variation_Import extends CSV_WC_Product_Import {
 
 					$featured = false;
 				} else {
-					CSV_WC_Product_Import_Export::log( '> > ' . $attachment_id->get_error_message() );
+					CWPIE_Product_Import_Export::log( '> > ' . $attachment_id->get_error_message() );
 				}
 			}
 
-			CSV_WC_Product_Import_Export::log( __( '> > Images set', CSV_TRANSLATE_NAME ) );
+			CWPIE_Product_Import_Export::log( __( '> > Images set', CWPIE_TRANSLATE_NAME ) );
 		}
 
 		// Import GPF
@@ -396,36 +396,36 @@ class CSV_WC_Product_Variation_Import extends CSV_WC_Product_Import {
 		$wpdb->query( 'COMMIT' );
 
 		if ( $merging ) {
-			CSV_WC_Product_Variation_Import::add_import_result( 'merged', 'Merge successful', $post_id, get_the_title( $post_parent ), $post['sku'] );
-			CSV_WC_Product_Import_Export::log( sprintf( __('> Finished merging variation ID %s.', CSV_TRANSLATE_NAME), $post_id ) );
+			CWPIE_Product_Variation_Import::add_import_result( 'merged', 'Merge successful', $post_id, get_the_title( $post_parent ), $post['sku'] );
+			CWPIE_Product_Import_Export::log( sprintf( __('> Finished merging variation ID %s.', CWPIE_TRANSLATE_NAME), $post_id ) );
 
 			//Insert Data Log
 			if(!empty($imported_file)){
-				$wpdb->insert($wpdb->prefix.'csv_product_import_data_log', array(
+				$wpdb->insert($wpdb->prefix.'cwpie_product_import_data_log', array(
 		            'file_name' => $imported_file,
 		            'product_id' => $post_id,
 		            'product_sku' => $post['sku'],
 		            'product_name' => get_the_title( $post['post_parent'] ),
 		            'product_type' => '',
 		            'status' => 0, 
-		            'status_message' => __( 'Merge successful', CSV_TRANSLATE_NAME ),
+		            'status_message' => __( 'Merge successful', CWPIE_TRANSLATE_NAME ),
 		            'created_at' => $created_at
 		        ));
 			}
 		} else {
-			CSV_WC_Product_Variation_Import::add_import_result( 'imported', 'Import successful', $post_id, get_the_title( $post_parent ), $post['sku'] );
-			CSV_WC_Product_Import_Export::log( sprintf( __('> Finished importing variation ID %s.', CSV_TRANSLATE_NAME), $post_id ) );
+			CWPIE_Product_Variation_Import::add_import_result( 'imported', 'Import successful', $post_id, get_the_title( $post_parent ), $post['sku'] );
+			CWPIE_Product_Import_Export::log( sprintf( __('> Finished importing variation ID %s.', CWPIE_TRANSLATE_NAME), $post_id ) );
 
 			//Insert Data Log
 			if(!empty($imported_file)){
-				$wpdb->insert($wpdb->prefix.'csv_product_import_data_log', array(
+				$wpdb->insert($wpdb->prefix.'cwpie_product_import_data_log', array(
 		            'file_name' => $imported_file,
 		            'product_id' => $post_id,
 		            'product_sku' => $post['sku'],
 		            'product_name' => get_the_title( $post['post_parent'] ),
 		            'product_type' => '',
 		            'status' => 0, 
-		            'status_message' => __( 'Import successful', CSV_TRANSLATE_NAME ),
+		            'status_message' => __( 'Import successful', CWPIE_TRANSLATE_NAME ),
 		            'created_at' => $created_at
 		        ));
 			}
@@ -472,13 +472,13 @@ class CSV_WC_Product_Variation_Import extends CSV_WC_Product_Import {
 	* Parses the CSV file and prepares us for the task of processing parsed data
 	*/
 	function import_start( $file, $mapping, $start_pos, $end_pos ) {
-		CSV_WC_Product_Import_Export::log( __( 'Parsing product variations CSV.', CSV_TRANSLATE_NAME ) );
+		CWPIE_Product_Import_Export::log( __( 'Parsing product variations CSV.', CWPIE_TRANSLATE_NAME ) );
 
-		$this->parser = new CSV_WC_Parser( 'product_variation' );
+		$this->parser = new CWPIE_Parser( 'product_variation' );
 
 		list( $this->parsed_data, $this->raw_headers, $position ) = $this->parser->parse_data( $file, $this->delimiter, $mapping, $start_pos, $end_pos );
 
-		CSV_WC_Product_Import_Export::log( __( 'Finished parsing product variations CSV.', CSV_TRANSLATE_NAME ) );
+		CWPIE_Product_Import_Export::log( __( 'Finished parsing product variations CSV.', CWPIE_TRANSLATE_NAME ) );
 
 		unset( $import_data );
 
@@ -490,7 +490,7 @@ class CSV_WC_Product_Variation_Import extends CSV_WC_Product_Import {
 
 	// Display import page title
 	function header() {
-		echo '<h2>' . ( empty( $_GET['merge'] ) ? __( 'Import Product Variations', CSV_TRANSLATE_NAME ) : __( 'Merge Product Variations', CSV_TRANSLATE_NAME ) ) . '</h2>';
+		echo '<h2>' . ( empty( $_GET['merge'] ) ? __( 'Import Product Variations', CWPIE_TRANSLATE_NAME ) : __( 'Merge Product Variations', CWPIE_TRANSLATE_NAME ) ) . '</h2>';
 	}
 
 	/**

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: CSV WC Product Import Export
  * Plugin URI : https://github.com/cmssoft/csv-wc-product-import-export
- * Description: CSV WooCommerce Product Import & Export Manage your WooCommerce product data by import & export from CSV file.
+ * Description: Manage your WooCommerce product data by import & export from CSV file.
  * Version: 1.0.0
  * Author: cmssoft
  * Author URI : https://github.com/cmssoft/
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) || ! is_admin() ) {
 * Include Dependencies
 */
 if ( ! class_exists( 'WC_Dependencies' ) ){
-	require_once 'includes/csv-wc-class-dependencies.php';
+	require_once 'includes/cwpie-class-dependencies.php';
 }
 
 /**
@@ -36,18 +36,20 @@ if ( ! is_woocommerce_active() ) {
 	return;
 }
 
-if ( ! class_exists( 'CSV_WC_Product_Import_Export' ) ) :
+if ( ! class_exists( 'CWPIE_Product_Import_Export' ) ) :
 
 /*
 * Plugin dir
 */
-define('CSV_PLUGIN_DIR_PATH',plugin_dir_path(__FILE__));
-define('CSV_PLUGIN_DIR_URL',plugin_dir_url(__FILE__));
-define('CSV_UPLOAD_DIR',WP_CONTENT_DIR."/uploads/csv_wc_product_import_export/");
-define('CSV_UPLOAD_DIR_NAME',WP_CONTENT_DIR."/uploads/csv_wc_product_import_export/");
-define('CSV_UPLOAD_CRON_DIR',CSV_UPLOAD_DIR."cron/");
-define('CSV_UPLOAD_CRON_DIR_NAME',CSV_UPLOAD_DIR_NAME."cron/");
-define('CSV_TRANSLATE_NAME','csv-wc-product-import-export');
+$upload = wp_upload_dir();
+$upload_dir = $upload['basedir'];
+define('CWPIE_PLUGIN_DIR_PATH',plugin_dir_path(__FILE__));
+define('CWPIE_PLUGIN_DIR_URL',plugin_dir_url(__FILE__));
+define('CWPIE_UPLOAD_DIR',$upload_dir."/cwpie_product_import_export/");
+define('CWPIE_UPLOAD_DIR_NAME',$upload_dir."/cwpie_product_import_export/");
+define('CWPIE_UPLOAD_CRON_DIR',CWPIE_UPLOAD_DIR."cron/");
+define('CWPIE_UPLOAD_CRON_DIR_NAME',CWPIE_UPLOAD_DIR_NAME."cron/");
+define('CWPIE_TRANSLATE_NAME','cwpie-product-import-export');
 
 /*
 * Cron Frequency 
@@ -81,7 +83,7 @@ define('FREQ_INTERVAL',$freq_interval);
 /**
 * Main CSV Import class
 */
-class CSV_WC_Product_Import_Export {
+class CWPIE_Product_Import_Export {
 
 	/**
 	* Logging class
@@ -92,8 +94,8 @@ class CSV_WC_Product_Import_Export {
 	* Constructor
 	*/
 	public function __construct() {
-		define( 'CSV_WC_FILE', __FILE__ );
-		define( 'CSV_WC_VERSION', '1.0.0' );
+		define( 'CWPIE_FILE', __FILE__ );
+		define( 'CWPIE_VERSION', '1.0.0' );
 
 		if ( is_admin() && ! ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
             register_activation_hook( __FILE__, array( $this, 'activate' ) );
@@ -107,12 +109,12 @@ class CSV_WC_Product_Import_Export {
 		add_action( 'init', array( $this, 'catch_export_request' ), 20 );
 		add_action( 'admin_init', array( $this, 'register_importers' ) );
 
-		include_once( 'includes/csv-wc-functions.php' );
-		include_once( 'includes/csv-wc-class-admin-screen.php' );
-		include_once( 'includes/importer/csv-wc-class-importer.php' );
+		include_once( 'includes/cwpie-functions.php' );
+		include_once( 'includes/cwpie-class-admin-screen.php' );
+		include_once( 'includes/importer/cwpie-class-importer.php' );
 
 		if ( defined('DOING_AJAX') ) {
-			include_once( 'includes/csv-wc-class-ajax-handler.php' );
+			include_once( 'includes/cwpie-class-ajax-handler.php' );
 		}
 	}
 
@@ -122,7 +124,7 @@ class CSV_WC_Product_Import_Export {
 	public function activate(){
 		global $wpdb;
 		
-	    $tblname = 'csv_product_import_cron';
+	    $tblname = 'cwpie_product_import_cron';
 	    $wp_track_table = $wpdb->prefix . "$tblname";
 	    #Check to see if the table exists already, if not, then create it
 	    if($wpdb->get_var( "show tables like '$wp_track_table'" ) != $wp_track_table) {	        
@@ -140,7 +142,7 @@ class CSV_WC_Product_Import_Export {
 	        dbDelta($sql);
 	    }
 
-	    $tblname = 'csv_product_import_data_log';
+	    $tblname = 'cwpie_product_import_data_log';
 	    $wp_track_table = $wpdb->prefix . "$tblname";
 	    #Check to see if the table exists already, if not, then create it
 	    if($wpdb->get_var( "show tables like '$wp_track_table'" ) != $wp_track_table) {	        
@@ -160,7 +162,7 @@ class CSV_WC_Product_Import_Export {
 	        dbDelta($sql);
 	    }
 
-	    $tblname = 'csv_product_import_file_log';
+	    $tblname = 'cwpie_product_import_file_log';
 	    $wp_track_table = $wpdb->prefix . "$tblname";
 	    #Check to see if the table exists already, if not, then create it
 	    if($wpdb->get_var( "show tables like '$wp_track_table'" ) != $wp_track_table) {	        
@@ -187,9 +189,9 @@ class CSV_WC_Product_Import_Export {
 	*/
 	public function uninstall(){
 		global $wpdb;
-	    $wpdb->query( "DROP TABLE IF EXISTS ".$wpdb->prefix."csv_product_import_cron" );
-	    $wpdb->query( "DROP TABLE IF EXISTS ".$wpdb->prefix."csv_product_import_data_log" );
-	    $wpdb->query( "DROP TABLE IF EXISTS ".$wpdb->prefix."csv_product_import_file_log" );
+	    $wpdb->query( "DROP TABLE IF EXISTS ".$wpdb->prefix."cwpie_product_import_cron" );
+	    $wpdb->query( "DROP TABLE IF EXISTS ".$wpdb->prefix."cwpie_product_import_data_log" );
+	    $wpdb->query( "DROP TABLE IF EXISTS ".$wpdb->prefix."cwpie_product_import_file_log" );
 	}
 
 	/**
@@ -215,8 +217,8 @@ class CSV_WC_Product_Import_Export {
 		if ( ! empty( $_GET['action'] ) && ! empty( $_GET['page'] ) && 'csv_wc_import_export' === $_GET['page'] ) {
 			switch ( $_GET['action'] ) {
 				case 'export' :
-					include_once( 'includes/exporter/csv-wc-class-exporter.php' );
-					CSV_WC_Exporter::do_export( 'product' );
+					include_once( 'includes/exporter/cwpie-class-exporter.php' );
+					CWPIE_Exporter::do_export( 'product' );
 				break;
 			}
 		}
@@ -226,7 +228,7 @@ class CSV_WC_Product_Import_Export {
 	* Register importers for use
 	*/
 	public function register_importers() {
-		register_importer( 'csv_wc', 'CSV Import (Product)', __('Import <strong>products</strong> to your store via a csv file.', CSV_TRANSLATE_NAME), 'CSV_WC_Importer::product_importer' );
+		register_importer( 'csv_wc', 'CSV Import (Product)', __('Import <strong>products</strong> to your store via a csv file.', CWPIE_TRANSLATE_NAME), 'CWPIE_Importer::product_importer' );
 	}
 
 	/**
@@ -250,9 +252,9 @@ class CSV_WC_Product_Import_Export {
 }
 endif;
 
-new CSV_WC_Product_Import_Export();
+new CWPIE_Product_Import_Export();
 
 /*
 * Cron
 */
-include_once( 'includes/csv-wc-cron.php' );
+include_once( 'includes/cwpie-cron.php' );
