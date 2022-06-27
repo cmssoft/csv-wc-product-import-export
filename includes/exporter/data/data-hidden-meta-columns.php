@@ -1,5 +1,4 @@
 <?php 
-
 // Exclude columns handled specifically
 return array(
 	'_product_attributes',

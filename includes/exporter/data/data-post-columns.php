@@ -1,8 +1,5 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
+if (!defined( 'ABSPATH')) exit;
 return apply_filters('woocommerce_csv_product_post_columns', array(
 	'_sku'				=> 'sku',
 	'post_parent'       => 'parent_sku',

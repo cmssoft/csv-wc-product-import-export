@@ -1,7 +1,5 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+if (!defined( 'ABSPATH')) exit;
 // New postmeta allowed
 return array(
 	'downloadable' 	=> array( 'yes', 'no' ),

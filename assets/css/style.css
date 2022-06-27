@@ -1,60 +1,60 @@
-#csv-progress {
+#piecfw-progress {
   width: 100%;
 }
-#csv-progress td,
-#csv-progress th {
+#piecfw-progress td,
+#piecfw-progress th {
   padding: 0.5em 1em;
 }
-#csv-progress td.status,
-#csv-progress th.status {
+#piecfw-progress td.status,
+#piecfw-progress th.status {
   width: 32px;
 }
-#csv-progress td.row,
-#csv-progress th.row {
+#piecfw-progress td.row,
+#piecfw-progress th.row {
   width: 3em;
   text-align: center;
 }
-#csv-progress td.reason,
-#csv-progress th.reason {
+#piecfw-progress td.reason,
+#piecfw-progress th.reason {
   text-align: right;
 }
-#csv-progress tr.importer-loading td {
+#piecfw-progress tr.importer-loading td {
   background: url(../images/loader.gif) no-repeat center center;
   height: 32px;
 }
-#csv-progress .skipped td {
+#piecfw-progress .skipped td {
   background: #f1efe7;
 }
-#csv-progress .failed td {
+#piecfw-progress .failed td {
   background: #ffeceb;
 }
-#csv-progress mark.result {
+#piecfw-progress mark.result {
   height: 0;
   display: block;
   line-height: 16px;
   overflow: hidden;
   padding: 16px 0 0 0;
 }
-#csv-progress .skipped mark.result {
+#piecfw-progress .skipped mark.result {
   background: url(../images/warning.png) no-repeat center top;
 }
-#csv-progress .imported mark.result,
-#csv-progress .merged mark.result {
+#piecfw-progress .imported mark.result,
+#piecfw-progress .merged mark.result {
   background: url(../images/done.png) no-repeat center top;
 }
-#csv-progress .failed mark.result {
+#piecfw-progress .failed mark.result {
   background: url(../images/error.png) no-repeat center top;
 }
-#csv-progress .complete td {
+#piecfw-progress .complete td {
   background: #C8E6C9;
   color: #008000;
   text-align: center;
   font-size: 1.1em;
 }
-#csv-progress .regenerating td {
+#piecfw-progress .regenerating td {
   padding: 0;
 }
-#csv-progress .regenerating div.progress {
+#piecfw-progress .regenerating div.progress {
   background: #000000;
   margin-top: 10px;
   padding: 0.5em 1em;

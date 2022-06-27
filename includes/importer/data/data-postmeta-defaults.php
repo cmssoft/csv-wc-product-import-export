@@ -1,9 +1,7 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+if (!defined( 'ABSPATH')) exit;
 // New postmeta defaults
-return apply_filters( 'csv_wc_product_postmeta_defaults', array(
+return apply_filters( 'piecfw_product_postmeta_defaults', array(
 	'sku'                         => '',
 	'downloadable'                => 'no',
 	'virtual'                     => 'no',

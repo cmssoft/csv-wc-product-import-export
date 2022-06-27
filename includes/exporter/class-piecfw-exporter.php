@@ -1,23 +1,19 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
-class CWPIE_Exporter {
-
+if (!defined( 'ABSPATH')) exit;
+class PIECFW_Exporter {
 	/**
 	 * Product Exporter Tool
 	 */
 	public static function do_export( $post_type = 'product' ) {
 		global $wpdb;
 
-		$export_limit                = ! empty( $_POST['limit'] ) ? intval( $_POST['limit'] ) : 999999999;
+		$export_limit                = ! empty( $_POST['limit'] ) ? intval( sanitize_text_field($_POST['limit']) ) : 999999999;
 		$export_count                = 0;
 		$limit                       = 100;
-		$current_offset              = ! empty( $_POST['offset'] ) ? intval( $_POST['offset'] ) : 0;
-		$csv_columns                 = include( 'data/data-post-columns.php' );
+		$current_offset              = ! empty( $_POST['offset'] ) ? intval( sanitize_text_field($_POST['offset']) ) : 0;
+		$piecfw_columns                 = include( 'data/data-post-columns.php' );
 		$product_taxonomies          = get_object_taxonomies( $post_type, 'name' );
-		$export_columns              = ! empty( $_POST['columns'] ) ? $_POST['columns'] : '';
+		$export_columns              = ! empty( $_POST['columns'] ) ? sanitize_text_field($_POST['columns']) : '';
 		$include_hidden_meta         = ! empty( $_POST['include_hidden_meta'] ) ? true : false;
 		$product_limit               = ! empty( $_POST['product_limit'] ) ? sanitize_text_field( $_POST['product_limit'] ) : '';
 		$exclude_hidden_meta_columns = include( 'data/data-hidden-meta-columns.php' );
@@ -36,9 +32,9 @@ class CWPIE_Exporter {
 		@ini_set( 'output_buffering', 'Off' );
 		@ini_set( 'output_handler', '' );
 
-		$filename_suffix = 'cwpie-product-export';
+		$filename_suffix = 'piecfw-product-export';
 		if ( 'product_variation' === $post_type ) {
-			$filename_suffix = 'cwpie-product-variations-export';
+			$filename_suffix = 'piecfw-product-variations-export';
 		}
 		$filename = sprintf( '%s-%s.csv', $filename_suffix, date_i18n( 'Y_m_d_H_i_s', current_time( 'timestamp' ) ) );
 
@@ -62,19 +58,19 @@ class CWPIE_Exporter {
 		// that can happen is we get an empty column.
 		foreach ( $all_meta_keys as $meta ) {
 			if ( ! $meta || $meta=='total_sales') continue;
-			if ( ! $include_hidden_meta && ! in_array( $meta, array_keys( $csv_columns ) ) && substr( $meta, 0, 1 ) == '_' )
+			if ( ! $include_hidden_meta && ! in_array( $meta, array_keys( $piecfw_columns ) ) && substr( $meta, 0, 1 ) == '_' )
 				continue;
-			if ( $include_hidden_meta && ( in_array( $meta, $exclude_hidden_meta_columns ) || in_array( $meta, array_keys( $csv_columns ) ) ) )
+			if ( $include_hidden_meta && ( in_array( $meta, $exclude_hidden_meta_columns ) || in_array( $meta, array_keys( $piecfw_columns ) ) ) )
 				continue;
 			$found_product_meta[] = $meta;
 		}
-		$found_product_meta = array_diff( $found_product_meta, array_keys( $csv_columns ) );
+		$found_product_meta = array_diff( $found_product_meta, array_keys( $piecfw_columns ) );
 
 		// Variable to hold the CSV data we're exporting
 		$row = array();
 
 		// Export header rows
-		foreach ( $csv_columns as $column => $value ) {			
+		foreach ( $piecfw_columns as $column => $value ) {			
 			if ( ! $export_columns || in_array( $column, $export_columns ) ) $row[] = esc_attr( $value );
 
 			if ( esc_attr( $value )=='sku' && $post_type == 'product_variation' ) {
@@ -148,7 +144,7 @@ class CWPIE_Exporter {
 			$row[] = 'gpf:promotion_id';
 		}
 
-		$row = array_map( 'CWPIE_Exporter::wrap_column', $row );
+		$row = array_map( 'PIECFW_Exporter::wrap_column', $row );
 		fwrite( $fp, implode( ',', $row ) . "\n" );
 		unset( $row );
 
@@ -182,7 +178,8 @@ class CWPIE_Exporter {
 			if ( $post_type == 'product' || $post_type == 'product_variation' ) {
 				if ( $product_limit ) {
 					$parent_ids               = array_map( 'intval', explode( ',', $product_limit ) );
-					$child_ids                = $wpdb->get_col( "SELECT ID FROM $wpdb->posts WHERE post_parent IN (" . implode( ',', $parent_ids ) . ");" );
+					$child_ids = $wpdb->get_var( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_parent IN (%s)", implode( ',', $parent_ids ) ) );
+
 					$product_args['post__in'] = $child_ids;
 				}
 			}
@@ -226,7 +223,7 @@ class CWPIE_Exporter {
 					if ( ! $meta ) {
 						continue;
 					}
-					if ( ! $include_hidden_meta && ! in_array( $meta, array_keys( $csv_columns ) ) && substr( $meta, 0, 1 ) == '_' ) {
+					if ( ! $include_hidden_meta && ! in_array( $meta, array_keys( $piecfw_columns ) ) && substr( $meta, 0, 1 ) == '_' ) {
 						continue;
 					}
 					if ( $include_hidden_meta && in_array( $meta, $exclude_hidden_meta_columns ) ) {
@@ -351,7 +348,7 @@ class CWPIE_Exporter {
 				}
 
 				// Get column values
-				foreach ( $csv_columns as $column => $value ) {
+				foreach ( $piecfw_columns as $column => $value ) {
 					if ( ! $export_columns || in_array( $column, $export_columns ) ) {
 
 						if ( $post_type == 'product_variation' && $column == '_regular_price' && empty( $product->meta->$column ) ) {
@@ -373,7 +370,7 @@ class CWPIE_Exporter {
 								$row[] = sanitize_text_field( $product->$column );
 							} else {
 								if(esc_attr( $value )=='parent_sku'){
-									$parent_sku = CWPIE_Product_Import_Export::get_meta_data( $product->$column, '_sku' );
+									$parent_sku = PIECFW_Product_Import_Export::get_meta_data( $product->$column, '_sku' );
 									$row[] = $parent_sku;
 								}else{
 									$row[] = self::format_data( $product->$column );
@@ -389,7 +386,7 @@ class CWPIE_Exporter {
 
 							if ( ! $post_parent_title ) continue;
 
-							$parent_sku = CWPIE_Product_Import_Export::get_meta_data( $product->post_parent, '_sku' );
+							$parent_sku = PIECFW_Product_Import_Export::get_meta_data( $product->post_parent, '_sku' );
 
 							$row[] = $parent_sku;
 
@@ -550,7 +547,7 @@ class CWPIE_Exporter {
 				}
 
 				// Add to csv
-				$row = array_map( 'CWPIE_Exporter::wrap_column', $row );
+				$row = array_map( 'PIECFW_Exporter::wrap_column', $row );
 				fwrite( $fp, implode( ',', $row ) . "\n" );
 				unset( $row );
 			}
@@ -596,7 +593,7 @@ class CWPIE_Exporter {
 		$enc  = mb_detect_encoding( $data, 'UTF-8, ISO-8859-1', true );
 		$data = ( $enc == 'UTF-8' ) ? $data : utf8_encode( $data );
 
-		return csv_wc_esc_csv( $data );
+		return piecfw_esc_csv( $data );
 	}
 
 	/**

@@ -1,7 +1,5 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+if (!defined( 'ABSPATH')) exit;
 // New post defaults
 return array(
 	'post_type' 	=> $this->post_type,

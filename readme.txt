@@ -1,4 +1,4 @@
-=== CSV WC Product Import Export ===
+=== CSV Product Import Export for WooCommerce ===
  
 Contributors: cmssoft
 Donate link: https://www.vrinsofts.com/
@@ -14,17 +14,17 @@ Manage your WooCommerce product data by import & export from CSV file.
   
 == Description ==
   
-CSV WC Product Import Export plugin:
-WooCommerce Product Import Export, as the name itself explains the plugin. You can import and export woocommerce products with a single plugin, where you get perfect solution to develop a product syncronize csv to woocommerce products. We understand the pain of manualy entries, thus, CSV WC Product Import Export plugin has got your back.
+CSV Product Import Export for WooCommerce plugin:
+WooCommerce Product Import Export, as the name itself explains the plugin. You can import and export woocommerce products with a single plugin, where you get perfect solution to develop a product syncronize csv to woocommerce products. We understand the pain of manualy entries, thus, CSV Product Import Export for WooCommerce plugin has got your back.
 
 Grievance and support:
 Vrinsoft has brought solution to all those problems. If you face any problems while developing the import and export woocommerce products or you have any questions or queries, which are not covered in the FAQs, feel free to contact us. You will find the contact details on the website Link. You can also send the enquiry on the contact details of WordPress or you can ask the questions via email id.
 
-Core features of the CSV WC Product Import Export plugin:
+Core features of the CSV Product Import Export for WooCommerce plugin:
 •	Developer friendly plugin
 
 Security:
-When it comes to the security, CSV WC Product Import Export plugin is one of the safest places where you can make a diversified range of product import, product export & cron scheduler with a single plugin for the website. Personalization with this plugin is simple and flexible.
+When it comes to the security, CSV Product Import Export for WooCommerce plugin is one of the safest places where you can make a diversified range of product import, product export & cron scheduler with a single plugin for the website. Personalization with this plugin is simple and flexible.
   
 == Installation ==
   
@@ -32,9 +32,6 @@ When it comes to the security, CSV WC Product Import Export plugin is one of the
 1. Go to the **Plugins** page and activate the plugin.
   
 == Frequently Asked Questions ==
-  
-= What are the additional settings I can use in this plugin? =
-You can edit the fields of the forms or remove and modify the same according to your requirements. The plugin lets you make multiple types of form and you can make the changes according to the requirements of your business as well as the products you are selling.
   
 = How to uninstall the plugin? =
   

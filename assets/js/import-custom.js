@@ -100,7 +100,7 @@ jQuery(document).ready(function(){
 			var formData1 = new FormData();
 			formData1.append('file', file_data);
 			formData1.append('is_cron','0');
-    		formData1.append('action', 'csv_wc_import_validation');
+    		formData1.append('action', 'piecfw_import_validation');
 			formData1.append('fields', jQuery("#import-upload-form2").serialize());
 			jQuery.ajax({
 			    url: my_ajax_object.ajax_url,
@@ -135,7 +135,7 @@ jQuery(document).ready(function(){
 		rules: {
 			start_date: "required",
 			frequency: "required",
-			csv_import: {
+			piecfw_import: {
 				required: true,
 				extension: "csv"
 			}
@@ -144,7 +144,7 @@ jQuery(document).ready(function(){
 			start_date: {
 				required: "Please select schedule date and time."
 			},
-			csv_import: {
+			piecfw_import: {
 				required: "Please select a csv file.",
 				extension: "Extension not allowed, please select only csv file."
 			}
@@ -156,11 +156,11 @@ jQuery(document).ready(function(){
 		errorElement : 'div',
         errorClass : 'error',
 		submitHandler: function(){			
-			var file_data = jQuery("#cron-upload-form").find('input#csv_import').prop('files')[0];
+			var file_data = jQuery("#cron-upload-form").find('input#piecfw_import').prop('files')[0];
 			var formData1 = new FormData();
 			formData1.append('file', file_data);
 			formData1.append('is_cron','1');
-    		formData1.append('action', 'csv_wc_import_validation');
+    		formData1.append('action', 'piecfw_import_validation');
 			formData1.append('start_date', jQuery("#start_date").val());
 			formData1.append('frequency', jQuery("#frequency").val());
 			jQuery.ajax({
@@ -179,12 +179,12 @@ jQuery(document).ready(function(){
 			    {
 			    	jQuery.each(msg, function(k, v){
 						jQuery('.loading_wrap').hide();
-			    		jQuery('#csv_import').parent().append(v);
+			    		jQuery('#piecfw_import').parent().append(v);
 					});
 
 					jQuery("#start_date").val('');
-					jQuery("#frequency").val('csv_one_time');
-					jQuery("#csv_import").val('');
+					jQuery("#frequency").val('piecfw_one_time');
+					jQuery("#piecfw_import").val('');
 					jQuery('#cron_paged').val(1);
 
 					cron_list_table(1,'','');
@@ -223,7 +223,7 @@ jQuery(document).ready(function(){
 					url: my_ajax_object.ajax_url,
 					type: "post",
 					data: {
-						action:'csv_wc_cron_status',
+						action:'piecfw_cron_status',
 						cron_id:cron_id,
 						cron_status:cron_status						
 					},
@@ -243,7 +243,7 @@ jQuery(document).ready(function(){
 						url: my_ajax_object.ajax_url,
 						type: "post",
 						data: {
-							action:'csv_wc_cron_delete',
+							action:'piecfw_cron_delete',
 							cron_id:cron_id					
 						},
 						beforeSend: function(){
@@ -267,7 +267,7 @@ jQuery(document).ready(function(){
 			url: my_ajax_object.ajax_url,
 			type: "post",
 			data: {
-                action:'csv_wc_cron_list',
+                action:'piecfw_cron_list',
                 paged:paged,
 				sort:datac,
 				order:datao
@@ -322,7 +322,7 @@ jQuery(document).ready(function(){
 						url: my_ajax_object.ajax_url,
 						type: "post",
 						data: {
-							action:'csv_wc_log_delete',
+							action:'piecfw_log_delete',
 							log_id:log_id					
 						},
 						beforeSend: function(){
@@ -345,7 +345,7 @@ jQuery(document).ready(function(){
 			url: my_ajax_object.ajax_url,
 			type: "post",
 			data: {
-                action:'csv_wc_filelog_list',
+                action:'piecfw_filelog_list',
                 paged:paged,
 				sort:datac,
 				order:datao
@@ -396,7 +396,7 @@ jQuery(document).ready(function(){
 			url: my_ajax_object.ajax_url,
 			type: "post",
 			data: {
-                action:'csv_wc_datalog_list',
+                action:'piecfw_datalog_list',
                 paged:paged,
 				sort:datac,
 				order:datao,
